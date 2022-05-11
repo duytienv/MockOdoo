@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_ptd_technical_characteristics_form" model="ir.ui.view">
+            <field name="model">ptd.technical.characteristics</field>
+            <field name="arch" type="xml">
+                <form string="Thông tin đặc điểm kĩ thuật">
+                    <sheet>
+                        <group>
+<!--                            <field name="id" />-->
+                            <field name="parameters" />
+                            <field name="val_maintain" />
+                            <field name="display_resolution" />
+                            <field name="exact_level" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_ptd_technical_characteristics_tree" model="ir.ui.view">
+            <field name="name">Thông tin đặc điểm kĩ thuật</field>
+            <field name="model">ptd.technical.characteristics</field>
+            <field name="arch" type="xml">
+                <tree string="Thông tin đặc điểm kĩ thuật" default_order="id desc" >
+                    <field name="id" />
+                    <field name="parameters" />
+                    <field name="val_maintain" />
+                    <field name="display_resolution" />
+                    <field name="exact_level" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="ptd_technical_characteristics_act" model="ir.actions.act_window">
+            <field name="name">Thông tin đặc điểm kĩ thuật</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ptd.technical.characteristics</field>
+            <field name="view_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

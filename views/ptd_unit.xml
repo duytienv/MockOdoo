@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_ptd_unit_form" model="ir.ui.view">
+            <field name="model">ptd.unit</field>
+            <field name="arch" type="xml">
+                <form string="Đơn vị tính">
+                    <sheet>
+                        <group>
+<!--                            <field name="id" />-->
+                            <field name="name" />
+                            <field name="note" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_ptd_unit_tree" model="ir.ui.view">
+            <field name="name">Đơn vị tính</field>
+            <field name="model">ptd.unit</field>
+            <field name="arch" type="xml">
+                <tree string="Đơn vị quản lý" default_order="id desc" >
+                    <field name="id" />
+                    <field name="name" />
+                    <field name="note" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="ptd_unit_act" model="ir.actions.act_window">
+            <field name="name">Đơn vị tính</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ptd.unit</field>
+            <field name="view_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

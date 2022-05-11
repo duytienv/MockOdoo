@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_ptd_ptd_search" model="ir.ui.view">
+            <field name="name">TEST</field>
+            <field name="model">ptd.ptd</field>
+            <field name="arch" type="xml">
+                <search string="Manage measuring devices search">
+                    <field name="asset_code" />
+                    <field name="serial_number" />
+
+                </search>
+            </field>
+        </record>
+        <record id="view_ptd_ptd_form" model="ir.ui.view">
+            <field name="model">ptd.ptd</field>
+            <field name="arch" type="xml">
+                <form string="TEST">
+                    <header>
+<!--                        <field name="quality_status" widget="statusbar" />-->
+    <!--                        <button string="Next status" name="test_func"-->
+    <!--                                type="object" class="oe_highlight"/>-->
+                    </header>
+
+                    <sheet>
+                        <field name="img" widget="image" class="oe_avatar"
+                          />
+                        <div class="oe-title">
+                            <h1>Tạo mới thiết bị </h1>
+                        </div>
+                        <notebook>
+                            <page string="Thông tin chung">
+                                <div>
+                                    <group>
+                                        <group>
+<!--                                            <field name="name" />-->
+                                            <field name="asset_code"/>
+                                            <field name="classify" />
+                                            <field name="type_equip_id" />
+                                            <field name="device_group_id" />
+                                            <field name="serial_number" />
+                                            <field name="system_id" />
+                                            <field name="manufactor_id"/>
+                                            <field name="model" />
+                                        </group>
+                                        <group>
+                                            <field name="unit_id" />
+                                            <field name="country_id" />
+                                            <field name="year_manufacture" />
+                                            <field name="year_use" widget="date"/>
+                                            <field name="description" />
+                                            <field name="attach_file" />
+                                            <field name="defense_ministry_equipment" />
+                                        </group>
+                                    </group>
+                                </div>
+                            </page>
+                            <page string="Thông tin quản lý">
+                                <group>
+                                    <group>
+                                        <field name="manager_id" />
+                                        <field name="unit_manager_id" />
+                                        <field name="handover_report" />
+                                        <field name="authorized_user" />
+                                        <field name="license_user" />
+                                    </group>
+                                    <group>
+
+                                        <field name="level1_unit" />
+                                        <field name="install_location_id" />
+                                        <field name="ttr" />
+                                        <field name="invest_project" />
+                                        <field name="invest_value" />
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Thông tin quản lý chất lượng">
+                                <group>
+                                    <group>
+                                        <field name="quality_status"/>
+<!--                                        <field name="fail_time"-->
+<!--                                               attrs="{'invisible': [('quality_status','!=','damaged')]}"/>-->
+<!--                                        <field name="fail_reason"-->
+<!--                                               attrs="{'invisible': [('quality_status','!=','damaged')]}"/>-->
+<!--&lt;!&ndash;                                        <field name="fail_day" />&ndash;&gt;-->
+                                        <field name="quality_level" />
+                                        <field name="transfer_date" />
+                                        <field name="transfer_reason" />
+                                    </group>
+                                    <group>
+                                        <field name="maintenance_cycle" />
+                                        <field name="stand_link_type" />
+                                        <field name="stand_link_cycle" />
+                                    </group>
+                                    <field name="broken_ids"
+                                           attrs="{'invisible': [('quality_status','!=','damaged')]}"/>
+                                    <field name="check_or_correct_ids" />
+                                </group>
+                            </page>
+<!--                            <page string="Thông tin quản lý chất lượng">-->
+<!--                                <group>-->
+<!--                                    <field name="stand_link_type" />-->
+<!--                                </group>-->
+<!--                                <field name="check_or_correct_ids" />-->
+<!--                            </page>-->
+                            <page string="Thông tin đặc tính kỹ thuật">
+                                <field name="technical_characteristics_ids" />
+                            </page>
+                            <page string="Thông tin bảo dưỡng">
+                                <field name="maintain_info_ids" />
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="action_ptd_ptd_tree" model="ir.ui.view">
+            <field name="name">Manage measuring devices</field>
+            <field name="model">ptd.ptd</field>
+            <field name="arch" type="xml">
+                <tree string="Manage measuring devices" default_order="id desc">
+                    <field name="id" />
+                    <field name="asset_code" />
+                    <field name="description" />
+                    <field name="quality_status" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="ptd_ptd_search" model="ir.ui.view">
+            <field name="name">ptd.ptd</field>
+            <field name="model">ptd.ptd</field>
+            <field name="arch" type="xml">
+                <search>
+                    <group expand="0" string="Group By">
+                        <field name="asset_code"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="ptd_ptd_act" model="ir.actions.act_window">
+            <field name="name">Create devices</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ptd.ptd</field>
+            <field name="view_id" eval="False" />
+        </record>
+
+    </data>
+</odoo>

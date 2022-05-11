@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_ptd_check_or_correct_form" model="ir.ui.view">
+            <field name="model">ptd.check.or.correct</field>
+            <field name="arch" type="xml">
+                <form string="Kiểm định/ Hiệu chỉnh">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" />
+                                <field name="stand_link_type" />
+                                <field name="implementation_date" />
+                                <field name="validity_date" />
+                                <field name="expiry_date" />
+                                <field name="organisation_id" />
+                            </group>
+                            <group>
+                                <field name="reason_not_pass"
+                                       attrs="{'invisible': [('name','!=','2')]}"/>
+                                <field name="certificate_number" />
+                                <field name="certificate" />
+                                <field name="performer" />
+                                <field name="attached_files" />
+                                <field name="note" />
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_ptd_check_or_correct_tree" model="ir.ui.view">
+            <field name="name">Kiểm định/ Hiệu chỉnh</field>
+            <field name="model">ptd.check.or.correct</field>
+            <field name="arch" type="xml">
+                <tree string="Kiểm định/ Hiệu chỉnh" default_order="id desc" >
+<!--                    <field name="id" />-->
+<!--                    <field name="name" />-->
+                    <field name="organisation_id" />
+                    <field name="certificate" />
+                    <field name="validity_date" />
+                    <field name="expiry_date" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="ptd_check_or_correct_act" model="ir.actions.act_window">
+            <field name="name">Kiểm định/ Hiệu chỉnh</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ptd.check.or.correct</field>
+            <field name="view_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

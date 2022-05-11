@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <data>
+                <menuitem
+                        id="ptd_management_menuroot"
+                        name="Mock Project PTĐ"
+                        sequence="5"/>
+                <menuitem
+                        id="ptd_config_menu"
+                        name="Configuration"
+                        parent="ptd_management_menuroot"
+                        sequence="5"/>
+                <menuitem
+                        id="ptd_1"
+                        name="Nhóm thiết bị"
+                        parent="ptd_config_menu"
+                        action="ptd_device_group_act"
+                        sequence="35"/>
+                <menuitem
+                        id="ptd_2"
+                        name="Chủng loại thiết bị"
+                        parent="ptd_config_menu"
+                        action="ptd_type_equipment_act"
+                        sequence="35"/>
+                <menuitem
+                        id="ptd_3"
+                        name="Kiểm định/ Hiệu chỉnh"
+                        parent="ptd_config_menu"
+                        action="ptd_check_or_correct_act"
+                        sequence="35"/>
+                <menuitem
+                        id="ptd_4"
+                        name="Tạo mới thiết bị đo"
+                        parent="ptd_management_menuroot"
+                        action="ptd_ptd_act"
+                        sequence="35"/>
+
+                <menuitem
+                        id="ptd_5"
+                        name="Thông tin đặc điểm kĩ thuật"
+                        parent="ptd_config_menu"
+                        action="ptd_technical_characteristics_act"
+                        sequence="20"/>
+                <menuitem
+                        id="ptd_6"
+                        name="Tạo mới hệ thống"
+                        parent="ptd_management_menuroot"
+                        action="ptd_system_act"
+                        sequence="15"/>
+                <menuitem
+                        id="ptd_7"
+                        name="Đơn vị quản lý"
+                        parent="ptd_config_menu"
+                        action="ptd_unit_manager_act"
+                        sequence="10"/>
+                <menuitem id="ptd_install_location_menu"
+                          name="Vị trí lắp đặt"
+                          parent="ptd_config_menu"
+                          action="ptd_install_location_act"
+                          sequence="35"/>
+                <menuitem id="ptd_maintain_info_menu"
+                          name="Thông tin bảo dưỡng"
+                          parent="ptd_config_menu"
+                          action="ptd_maintain_info_act"
+                          sequence="36"/>
+                <menuitem id="ptd_manager_menu"
+                          name="Thông tin người quản lý"
+                          parent="ptd_config_menu"
+                          action="ptd_manager_act"
+                          sequence="37"/>
+                <menuitem id="ptd_manufactor_menu"
+                          name="Thông tin nhà sản xuất"
+                          parent="ptd_config_menu"
+                          action="ptd_manufactor_act"
+                          sequence="38"/>
+                <menuitem id="ptd_id7"
+                          name="Đơn vị tính"
+                          parent="ptd_config_menu"
+                          action="ptd_unit_act"
+                          sequence="38"/>
+        </data>
+</odoo>
