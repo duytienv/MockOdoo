@@ -13,19 +13,18 @@ class PtdCheckOrCorrect(models.Model):
     )
     stand_link_type = fields.Selection(
         string='Loại liên kết chuẩn',
-        selection=[('1', 'Kiểm định'), ('2', 'Hiệu chỉnh')],
-        default="1",
+        selection=[('Kiểm định', 'Kiểm định'), ('Hiệu chuẩn', 'Hiệu chỉnh')],
         tracking=True
     )
-    implementation_date=fields.Date(string="Ngày thực hiện",require=True)
+    implementation_date=fields.Date(string="Ngày thực hiện", require=True)
     validity_date = fields.Date(string="Ngày hiệu lực theo GCN")
     expiry_date = fields.Date(string="Ngày hết hạn theo GCN")
     organisation_id = fields.Text(string="Đơn vị chứng nhận")
     reason_not_pass = fields.Text(string="Nguyên nhân không đạt")
     certificate_number = fields.Text(string="Số giấy chứng nhận")
-    certificate = fields.Text(string="Giấy chứng nhận")
+    certificate = fields.Binary(string="Giấy chứng nhận")
     performer = fields.Char(string="Người thực hiện")
-    attached_files = fields.Binary(string="File đính kèm")
+    # attached_files = fields.Binary(string="File đính kèm")
     note = fields.Text(string = 'Note')
 
     check_or_correct_id= fields.Many2one(comodel_name='ptd.ptd')
@@ -41,6 +40,12 @@ class PtdCheckOrCorrect(models.Model):
                 raise UserError("Nguyên nhân không đạt không được để trống")
         if vals['certificate_number'] == 0:
             raise UserError("Số giấy chứng nhận không được để trống")
+        if vals['certificate_number'].isalnum() == False:
+            raise UserError("Số giấy chứng nhận chỉ gồm ký tự và số")
+
+        # if vals['asset_code'].isalnum() == False:
+        #     raise UserError("Mã QLTS: chỉ gồm ký tự chữ hoặc số")
+
         if vals['certificate'] == 0:
             raise UserError("Giấy chứng nhận không được để trống")
         if vals['validity_date'] == 0:
@@ -51,6 +56,9 @@ class PtdCheckOrCorrect(models.Model):
             raise UserError("Ngày thực hiện không được để trống")
         if vals['stand_link_type'] == 0:
             raise UserError("Loại liên kết chuẩn không được để trống")
+
+
+        #điều kiện tạo ngày thực hiện, hiệu lực, hết hạn
         if vals['implementation_date']>vals['validity_date']:
             raise UserError("Ngày hiệu lực không hợp lệ")
         if vals['validity_date']> vals['expiry_date']:
@@ -62,12 +70,33 @@ class PtdCheckOrCorrect(models.Model):
     def write(self, vals):
         #update các trường không được để thiếu
         if 'stand_link_type' in vals:
-            print(vals['stand_link_type'])
+            # print(vals['stand_link_type'])
             if vals['stand_link_type'] ==False:
                 raise UserError("Loại liên kết chuẩn không được để trống")
+        if 'organisation_id' in vals:
+            print(vals['organisation_id'])
+            if len(vals['organisation_id']) == 0:
+                raise UserError("Đơn vị chứng nhận không được để trống")
 
+        # if 'certificate_number' in vals:
+        #     # print(vals['certificate_number'])
+        #     if len(vals['certificate_number']) ==0:
+        #         raise UserError("Số giấy chứng nhận không được để trống")
 
+        if 'certificate_number' in vals:
+            if len(vals['certificate_number'])==0:
+                raise UserError("Số giấy chứng nhận không được để trống")
+            else:
+                if vals['certificate_number'].isalnum() == False:
+                    raise UserError("Số giấy chứng nhận chỉ gồm ký tự và số")
 
+        if 'certificate' in vals:
+            # print(vals['certificate'])
+            if len(vals['certificate']) == 0:
+                raise UserError("Giấy chứng nhận không được để trống")
+        if 'reason_not_pass' in vals:
+            if len(vals['reason_not_pass']) == 0:
+                raise UserError("Nguyên nhân không đạt không được để trống")
 
         #update thời gian thực hiện, sử dụng, hết hạn
         date1= self.implementation_date
@@ -90,7 +119,7 @@ class PtdCheckOrCorrect(models.Model):
                 raise UserError("Kết quả không được để trống")
             if vals['name'] == '2' and 'reason_not_pass' not in vals:
                 raise UserError("Nguyên nhân không đạt không được để trống")
-            if vals['name'] == '1':
-                self.reason_not_pass =""
+            # if vals['name'] == '1':
+            #     self.reason_not_pass =""
         result = super(PtdCheckOrCorrect, self).write(vals)
         return result

@@ -21,7 +21,7 @@
                                 <field name="certificate_number" />
                                 <field name="certificate" />
                                 <field name="performer" />
-                                <field name="attached_files" />
+<!--                                <field name="attached_files" />-->
                                 <field name="note" />
                             </group>
                         </group>
@@ -42,6 +42,19 @@
                     <field name="validity_date" />
                     <field name="expiry_date" />
                 </tree>
+            </field>
+        </record>
+
+        <record id="ptd_check_search" model="ir.ui.view">
+            <field name="name">ptd.check.or.correct</field>
+            <field name="model">ptd.check.or.correct</field>
+            <field name="arch" type="xml">
+                <search>
+                    <group expand="0" string="Group By">
+                        <field name="name"/>
+                        <field name="stand_link_type"/>
+                    </group>
+                </search>
             </field>
         </record>
 

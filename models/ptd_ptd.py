@@ -12,6 +12,7 @@ class PhuongTienDo(models.Model):
 
 
     asset_code = fields.Char("Mã QLTS", required = True)
+    name = fields.Char("Tên thiết bị")
 
     classify = fields.Selection(
         string='Phân loại',
@@ -126,7 +127,7 @@ class PhuongTienDo(models.Model):
     check_or_correct_ids = fields.One2many(
         comodel_name='ptd.check.or.correct',
         inverse_name='check_or_correct_id',
-        string='Check/Correct',
+        string='Kiểm định/ Hiệu chỉnh',
         tracking=True,
         track_visibility='onchange',
         required=False)
@@ -153,7 +154,7 @@ class PhuongTienDo(models.Model):
             raise UserError(
                 "Mô tả tối đa 300 ký tự")
         if vals['year_manufacture'] >= vals['year_use']:
-            raise ValidationError("Năm sử dụng không hợp lệ")
+            raise ValidationError("Năm đưa vào sử dụng không hợp lệ")
         else:
             result = super(PhuongTienDo, self).create(vals)
         return result

@@ -22,7 +22,6 @@
                 <form string="Thông tin bảo dưỡng">
                     <sheet>
                         <group>
-                            <field name="id"/>
                             <field name="name"/>
                             <field name="implementation_date"/>
                             <field name="cost"/>
