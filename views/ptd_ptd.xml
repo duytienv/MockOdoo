@@ -18,8 +18,8 @@
                 <form string="TEST">
                     <header>
 <!--                        <field name="quality_status" widget="statusbar" />-->
-    <!--                        <button string="Next status" name="test_func"-->
-    <!--                                type="object" class="oe_highlight"/>-->
+                            <button string="TEST" name="display"
+                                    type="object" class="oe_highlight"/>
                     </header>
 
                     <sheet>

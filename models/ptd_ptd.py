@@ -11,7 +11,7 @@ class PhuongTienDo(models.Model):
     # THÔNG TIN CHUNG
 
 
-    asset_code = fields.Char("Mã QLTS", required = True)
+    asset_code = fields.Char("Mã QLTS")
     name = fields.Char("Tên thiết bị")
 
     classify = fields.Selection(
@@ -36,7 +36,7 @@ class PhuongTienDo(models.Model):
 
     country_id = fields.Many2one("res.country", "Nước sản xuất")
 
-    year_manufacture = fields.Date('Năm sản xuất')
+
 
     year_use = fields.Date(string="Năm đưa vào sử dụng")
 
@@ -142,10 +142,34 @@ class PhuongTienDo(models.Model):
         track_visibility='onchange',
         required=False)
 
+    def year_selection(self):
+        year = 2000
+        year_list = []
+        while year != 2030:
+            year_list.append((str(year), str(year)))
+            year += 1
+        return year_list
+
+    year_manufacture = fields.Selection(
+        year_selection,
+        string="Năm sản xuất",
+        default="",  # as a default value it would be 2019
+    )
+
+
+    @api.onchange('asset_code')
+    def _onchange_asset_code(self):
+        print(type(self.asset_code))
+        if self.asset_code == '':
+            return {
+                'warning':{
+                    'title': "Mã QLTS",
+                    'message':" Mã QLTS trống"
+                }
+            }
+
     @api.model
     def create(self, vals):
-        print(vals['year_manufacture'])
-        print(vals['year_use'])
         if vals['asset_code'].isalnum() == False:
             raise UserError("Mã QLTS: chỉ gồm ký tự chữ hoặc số")
         if vals['serial_number'].isalnum() == False:
@@ -153,22 +177,29 @@ class PhuongTienDo(models.Model):
         if vals['description']!=0 and len(vals['description'])>=300:
             raise UserError(
                 "Mô tả tối đa 300 ký tự")
-        if vals['year_manufacture'] >= vals['year_use']:
+        if int(vals['year_manufacture']) > int(str(vals['year_use'][:4])):
             raise ValidationError("Năm đưa vào sử dụng không hợp lệ")
         else:
             result = super(PhuongTienDo, self).create(vals)
         return result
 
     def write(self, vals):
-
-        #update Mã QLTS
+        # thời gian hỏng giữa 2 lần của cùng một thiết bị
+        if 'broken_ids' in vals:
+            Broken_ids=vals['broken_ids']
+            broken_id= Broken_ids[len(Broken_ids)-1]
+            print(broken_id)
+            if self.broken_ids.fail_time!=False:
+                if broken_id[2] != False:
+                    if datetime.strptime(str(broken_id[2]['fail_time']), "%Y-%m-%d").date()<self.broken_ids[len(self.broken_ids)-1].fail_time:
+                        raise UserError('Thời gian giữa 2 lần hỏng không hợp lệ')
+        # update Mã QLTS
         if 'asset_code' in vals:
             if len(vals['asset_code'])==0:
                 raise UserError("Trường: asset_number trống ")
             else:
                 if vals['asset_code'].isalnum() == False:
                     raise UserError("Mã QLTS: chỉ gồm ký tự chữ hoặc số")
-
         #update số hiệu thiết bị
         # print(len(vals['serial_number']))
         if 'serial_number' in vals:
@@ -177,23 +208,19 @@ class PhuongTienDo(models.Model):
             else:
                 if vals['serial_number'].isalnum() == False:
                     raise UserError("Số hiệu chỉ gồm ký tự chữ hoặc số")
+
+
         # Update điều kiện năm sản xuất là năm đưa vào sử dụng
         if 'year_manufacture' in vals or 'year_use' in vals :
-            date1=self.year_manufacture
-            date2=self.year_use
-            # print(date2)
-            # print(type(date2))
-            # print(type(vals['year_use']))
-            if 'year_manufacture' in vals and 'year_use' in vals:
-                if datetime.strptime(str(vals['year_manufacture']),"%Y-%m-%d").date() >= datetime.strptime(str(vals['year_use']),"%Y-%m-%d").date():
-                    raise ValidationError("Năm sử dụng không hợp lệ")
-            elif 'year_manufacture' in vals and 'year_use' not in vals:
-                if datetime.strptime(str(vals['year_manufacture']),"%Y-%m-%d").date() >= datetime.strptime(str(date2),"%Y-%m-%d").date():
-                    raise ValidationError("Năm sử dụng không hợp lệ")
-            else:
-                if datetime.strptime(str(date1),"%Y-%m-%d").date()>= datetime.strptime(str(vals['year_use']),"%Y-%m-%d").date():
-                    raise ValidationError("Năm sử dụng không hợp lệ")
-
+            date1 = self.year_manufacture
+            date2 = str(self.year_use)
+            if 'year_manufacture' in vals:
+                date1=int(vals['year_manufacture'])
+                # print(date1)
+            if 'year_use' in vals:
+                date2 =vals['year_use']
+            if int(date2[:4]) < int(date1):
+                raise ValidationError("Năm sử dụng không hợp lệ")
 
 
         # update lại ngày chuyển cấp và nguyên nhân mỗi lần thay đổi phân cấp
@@ -221,3 +248,7 @@ class PhuongTienDo(models.Model):
     def unlink(self):
         result = super(PhuongTienDo, self).unlink()
         print(result)
+    def display(self):
+        print(self.broken_ids.fail_time)
+
+

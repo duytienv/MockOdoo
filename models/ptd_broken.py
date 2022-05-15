@@ -29,3 +29,6 @@ class PtdBroken(models.Model):
                     "Thêm đầy đủ ngày, nguyên nhân hỏng")
         result = super(PtdBroken, self).write(vals)
         return result
+    def unlink(self):
+        result = super(PtdBroken, self).unlink()
+        print(result)
