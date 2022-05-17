@@ -160,17 +160,22 @@ class PhuongTienDo(models.Model):
     #     if self.year_use:
     #         self.year_test = datetime.strptime(str(self.year_use), "%Y-%m-%d").date() + timedelta(days=10)
 
+    @api.onchange('maintain_info_ids')
+    def _onchange_maintain_info_ids(self):
+        print(self._origin.maintain_info_ids)
+        print(self.maintain_info_ids)
+        len_origin = len(self._origin.maintain_info_ids)
+        if len_origin > 0:
+            if len_origin < len(self.maintain_info_ids):
+                if self.maintain_info_ids[len_origin].implementation_date < self._origin.maintain_info_ids[len_origin - 1].implementation_date:
+                    raise UserError('Ngày hỏng không hợp lệ')
+            if len_origin == len(self.maintain_info_ids):
+                print(self.maintain_info_ids[0].implementation_date)
+                print(self._origin.maintain_info_ids[len_origin - 2].implementation_date)
+                if self.maintain_info_ids[0].implementation_date < self._origin.maintain_info_ids[len_origin - 2].implementation_date:
+                    raise UserError('Ngày hỏng không hợp lệ')
 
-    @api.onchange('asset_code')
-    def _onchange_asset_code(self):
-        print(type(self.asset_code))
-        if self.asset_code == '':
-            return {
-                'warning':{
-                    'title': "Mã QLTS",
-                    'message':" Mã QLTS trống"
-                }
-            }
+
     @api.onchange('broken_ids')
     def _onchange_broken_ids(self):
         print(self._origin.broken_ids)
