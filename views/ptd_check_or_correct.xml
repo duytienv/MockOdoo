@@ -5,6 +5,8 @@
             <field name="model">ptd.check.or.correct</field>
             <field name="arch" type="xml">
                 <form string="Kiểm định/ Hiệu chỉnh">
+
+
                     <sheet>
                         <group>
                             <group>
@@ -36,9 +38,9 @@
             <field name="arch" type="xml">
                 <tree string="Kiểm định/ Hiệu chỉnh" default_order="id desc" >
 <!--                    <field name="id" />-->
-<!--                    <field name="name" />-->
                     <field name="organisation_id" />
                     <field name="certificate" />
+                    <field name="implementation_date" />
                     <field name="validity_date" />
                     <field name="expiry_date" />
                 </tree>

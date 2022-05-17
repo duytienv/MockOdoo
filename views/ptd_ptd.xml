@@ -47,7 +47,8 @@
                                             <field name="unit_id" />
                                             <field name="country_id" />
                                             <field name="year_manufacture" />
-                                            <field name="year_use" widget="date"/>
+                                            <field name="year_use"/>
+<!--                                            <field name="year_test"/>-->
                                             <field name="description" />
                                             <field name="attach_file" />
                                             <field name="defense_ministry_equipment" />

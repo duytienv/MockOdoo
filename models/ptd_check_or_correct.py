@@ -1,6 +1,6 @@
 from odoo import models, fields, api
 from odoo.exceptions import UserError
-from datetime import datetime
+from datetime import datetime, timedelta
 class PtdCheckOrCorrect(models.Model):
     _name = "ptd.check.or.correct"
     _description = "Kiểm định hiệu chỉnh"
@@ -18,17 +18,19 @@ class PtdCheckOrCorrect(models.Model):
     )
     implementation_date=fields.Date(string="Ngày thực hiện", require=True)
     validity_date = fields.Date(string="Ngày hiệu lực theo GCN")
-    expiry_date = fields.Date(string="Ngày hết hạn theo GCN")
+    expiry_date = fields.Date("Ngày hết hạn theo GCN")
     organisation_id = fields.Text(string="Đơn vị chứng nhận")
     reason_not_pass = fields.Text(string="Nguyên nhân không đạt")
     certificate_number = fields.Text(string="Số giấy chứng nhận")
     certificate = fields.Binary(string="Giấy chứng nhận")
     performer = fields.Char(string="Người thực hiện")
-    # attached_files = fields.Binary(string="File đính kèm")
     note = fields.Text(string = 'Note')
-
     check_or_correct_id= fields.Many2one(comodel_name='ptd.ptd')
 
+    @api.onchange('validity_date')
+    def _expiry_date(self):
+        if self.validity_date:
+            self.expiry_date=self.validity_date + timedelta(days=180)
     @api.model
     def create(self, vals):
         if vals['name'] == 0:

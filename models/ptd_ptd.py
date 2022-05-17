@@ -1,8 +1,7 @@
 from odoo import models, fields, api
 from odoo.exceptions import UserError
 from odoo.exceptions import ValidationError
-import time
-from datetime import datetime
+from datetime import datetime, timedelta
 class PhuongTienDo(models.Model):
     _name = "ptd.ptd"
     _description = "Create measuring device"
@@ -39,7 +38,7 @@ class PhuongTienDo(models.Model):
 
 
     year_use = fields.Date(string="Năm đưa vào sử dụng")
-
+    # year_test = fields.Date(string="Năm TEST")
     img = fields.Image("IMG")
 
     description = fields.Text(string="Mô tả")
@@ -155,6 +154,11 @@ class PhuongTienDo(models.Model):
         string="Năm sản xuất",
         default="",  # as a default value it would be 2019
     )
+    #
+    # @api.depends('year_use')
+    # def _test(self):
+    #     if self.year_use:
+    #         self.year_test = datetime.strptime(str(self.year_use), "%Y-%m-%d").date() + timedelta(days=10)
 
 
     @api.onchange('asset_code')
@@ -167,6 +171,47 @@ class PhuongTienDo(models.Model):
                     'message':" Mã QLTS trống"
                 }
             }
+    @api.onchange('broken_ids')
+    def _onchange_broken_ids(self):
+        print(self._origin.broken_ids)
+        print(self.broken_ids)
+        len_origin=len(self._origin.broken_ids)
+        if len_origin>0:
+            if len_origin<len(self.broken_ids):
+                if self.broken_ids[len_origin].fail_time < self._origin.broken_ids[len_origin -1].fail_time:
+                    raise UserError('Ngày hỏng không hợp lệ')
+            if len_origin == len(self.broken_ids):
+                print(self.broken_ids[0].fail_time)
+                print(self._origin.broken_ids[len_origin - 2].fail_time)
+                if self.broken_ids[0].fail_time < self._origin.broken_ids[len_origin -2].fail_time:
+                    raise UserError('Ngày hỏng không hợp lệ')
+
+
+    #thời gian giữa 2 lần kiểm định/HC
+    @api.onchange('check_or_correct_ids')
+    def _onchange_check_or_correct_ids(self):
+        # print(self._origin.check_or_correct_ids)
+        # print(self.check_or_correct_ids)
+        len_origin = len(self._origin.check_or_correct_ids)
+        if len_origin > 0:
+            if len_origin < len(self.check_or_correct_ids):
+                # print(self.check_or_correct_ids[len_origin].implementation_date)
+                # print(self._origin.check_or_correct_ids[len_origin - 1].implementation_date)
+                if self.check_or_correct_ids[len_origin].implementation_date < self._origin.check_or_correct_ids[len_origin - 1].implementation_date:
+                    raise UserError('Ngày thực hiện không hợp lệ')
+                if self.check_or_correct_ids[len_origin].validity_date < self._origin.check_or_correct_ids[len_origin - 1].validity_date:
+                    raise UserError('Ngày hiệu lực không hợp lệ')
+            if len_origin == len(self.check_or_correct_ids):
+                # print(self.check_or_correct_ids[0].implementation_date)
+                # print(self._origin.check_or_correct_ids[len_origin - 2].implementation_date)
+                if self.check_or_correct_ids[0].implementation_date < self._origin.check_or_correct_ids[len_origin - 2].implementation_date:
+                    raise UserError('Ngày thực hiện không hợp lệ')
+                if self.check_or_correct_ids[0].validity_date < self._origin.check_or_correct_ids[len_origin - 2].validity_date:
+                    raise UserError('Ngày hiệu lực không hợp lệ')
+
+
+
+
 
     @api.model
     def create(self, vals):
@@ -184,15 +229,6 @@ class PhuongTienDo(models.Model):
         return result
 
     def write(self, vals):
-        # thời gian hỏng giữa 2 lần của cùng một thiết bị
-        if 'broken_ids' in vals:
-            Broken_ids=vals['broken_ids']
-            broken_id= Broken_ids[len(Broken_ids)-1]
-            print(broken_id)
-            if self.broken_ids.fail_time!=False:
-                if broken_id[2] != False:
-                    if datetime.strptime(str(broken_id[2]['fail_time']), "%Y-%m-%d").date()<self.broken_ids[len(self.broken_ids)-1].fail_time:
-                        raise UserError('Thời gian giữa 2 lần hỏng không hợp lệ')
         # update Mã QLTS
         if 'asset_code' in vals:
             if len(vals['asset_code'])==0:
@@ -248,7 +284,12 @@ class PhuongTienDo(models.Model):
     def unlink(self):
         result = super(PhuongTienDo, self).unlink()
         print(result)
+
+    # @api.onchange('year_use')
     def display(self):
-        print(self.broken_ids.fail_time)
+        self.year_test=self.year_use + timedelta(days=10)
+        print(self.year_test)
+        # print(type(self.year_use + timedelta(days=10)))
+
 
 
