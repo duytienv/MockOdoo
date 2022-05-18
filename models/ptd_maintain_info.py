@@ -11,7 +11,7 @@ class PtdMaintainInfo(models.Model):
     name = fields.Char(string="Người thực hiện",required = True)
     cost = fields.Char(string="Giá thành")
     implementation_date = fields.Date(string="Ngày thực hiện")
-    attach_file = fields.Char(string="File đính kèm")
+    attach_file = fields.Binary(string="File đính kèm")
     note = fields.Char(string="Ghi chú")
     maintain_info_id=fields.Many2one("ptd.ptd")
     @api.model

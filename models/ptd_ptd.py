@@ -168,7 +168,7 @@ class PhuongTienDo(models.Model):
         if len_origin > 0:
             if len_origin < len(self.maintain_info_ids):
                 if self.maintain_info_ids[len_origin].implementation_date < self._origin.maintain_info_ids[len_origin - 1].implementation_date:
-                    raise UserError('Ngày hỏng không hợp lệ')
+                    raise UserError('Ngày thuc không hợp lệ')
             if len_origin == len(self.maintain_info_ids):
                 print(self.maintain_info_ids[0].implementation_date)
                 print(self._origin.maintain_info_ids[len_origin - 2].implementation_date)

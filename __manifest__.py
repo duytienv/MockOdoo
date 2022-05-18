@@ -9,6 +9,8 @@
         TASYS
     """,
     'data': [
+        'views/template.xml',
+        'report/baocao.xml',
         'views/ptd_broken.xml',
         'views/ptd_manager.xml',
         'views/ptd_manufactor.xml',
