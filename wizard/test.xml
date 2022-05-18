@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_test_form" model="ir.ui.view">
+            <field name="name">Test</field>
+            <field name="model">test</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="asset_code" />
+                    </group>
+                    <footer>
+                        <button string ="OK" type="object" name ="test" class="oe_highlight"/>
+                        <button string ="SEARCH" type="object" name ="search_view" class="oe_highlight"/>
+                        <button string ="CANCEL" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="test_act" model="ir.actions.act_window">
+            <field name="name">TEST</field>
+            <field name="res_model">test</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+
+    </data>
+</odoo>

@@ -289,12 +289,13 @@ class PhuongTienDo(models.Model):
     def unlink(self):
         result = super(PhuongTienDo, self).unlink()
         print(result)
-
-    # @api.onchange('year_use')
-    def display(self):
-        self.year_test=self.year_use + timedelta(days=10)
-        print(self.year_test)
-        # print(type(self.year_use + timedelta(days=10)))
+    def test(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'test',
+            'view_mode': 'form',
+            'target': 'new'
+        }
 
 
 

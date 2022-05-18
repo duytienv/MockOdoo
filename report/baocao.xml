@@ -17,65 +17,57 @@
             <field name="header_spacing">0</field>
             <field name="dpi">96</field>
         </record>
-
-
-
-
        <template id="BaoCaoChiTiet">
               <t t-call="web.basic_layout">
                 <tbody t-foreach="docs" t-as="o">
-                    <h1 class="h1">Báo cáo chi tiết phương tiện đo</h1>
-                    <table class="container" border="1px">
-                        <thead>
-                            <tr>
-                                <th rowspan="3">STT</th>
-                                <th rowspan="3">Tên phương tiện đo</th>
-                                <th rowspan="3">Mã hàng hoá</th>
-                                <th rowspan="3">Part numbers</th>
-                                <th rowspan="3">Serial</th>
-                                <th rowspan="3">Tình trạng</th>
-                                <th rowspan="3">Thời gian đưa vào sử dụng</th>
-                                <th colspan="4">Thông tin quản lí</th>
-                                <th colspan="7">Phân cấp chất lượng</th>
-                                <th colspan="1">Công tác kiểm định/Hiệu chuẩn (KĐHC)</th>
-                                <th colspan="2">Công tác bảo trì, bảo dưỡng</th>
-                                <th colspan="3">Công tác bảo hành sửa chữa</th>
-                            </tr>
-                            <tr>
-                                <!-- Thông tin quản lí -->
-                                <th rowspan="2">Mã nhân viên</th>
-                                <th rowspan="2">Họ và tên</th>
-                                <th rowspan="2">Đơn vị quản lí</th>
-                                <!-- Phân cấp chất lượng -->
-                                <th rowspan="2">Cấp 1</th>
-                                <th rowspan="2">Cấp 2</th>
-                                <th rowspan="2">Cấp 3</th>
-                                <th rowspan="2">Cấp 4</th>
-                                <!-- Công tác kiểm định hiệu chuẩn -->
-                                <th rowspan="2">Chu kì kiểm định hiệu chuẩn</th>
-                                <th rowspan="2">Thời gian thực hiện KĐHC gần nhất</th>
-                                <th rowspan="2">Đối tác thực hiện KĐHC</th>
-                                <th rowspan="2">Ghi rõ KĐ hay HC</th>
-                                <!-- Merger col -->
-                                <th colspan="3">Kết quả kiểm định hay hiệu chuẩn</th>
-                                <!-- Công tác bảo trì -->
-                                <th rowspan="2">Thời gian thực hiện gần nhất</th>
-                                <!-- Công tác bảo hành sửa chữa -->
-                                <th rowspan="2">Thời gian hỏng gần nhất</th>
-                                <th rowspan="2">Nguyên nhân hỏng</th>
-                            </tr>
-                            <tr>
-                                <th>Đạt</th>
-                                <th>Không Đạt</th>
-                                <th>Nguyên nhân không đạt</th>
-                            </tr>
-                            <tr>
-                                <th>Ghi chú</th>
-                            </tr>
-                        </thead>
+                    <h1 class="header">Báo cáo chi tiết phương tiện đo</h1>
+                    <table class="h1">
+                            <thead>
+                                <tr>
+                                    <th rowspan="3">STT</th>
+                                    <th rowspan="3">Tên phương tiện đo</th>
+                                    <th rowspan="3">Mã hàng hoá</th>
+                                    <th rowspan="3">Part numbers</th>
+                                    <th rowspan="3">Serial</th>
+                                    <th rowspan="3">Tình trạng</th>
+                                    <th rowspan="3">Thời gian đưa vào sử dụng</th>
+                                    <th colspan="3">Thông tin quản lí</th>
+                                    <th colspan="8">Phân cấp chất lượng</th>
+                                    <th colspan="1">Công tác kiểm định/Hiệu chuẩn (KĐHC)</th>
+                                    <th colspan="2">Công tác bảo trì, bảo dưỡng</th>
+                                    <th colspan="3">Công tác bảo hành sửa chữa</th>
+                                    <th rowspan="3">Ghi chú</th>
+                                </tr>
+                                <tr>
+                                    <!-- Thông tin quản lí -->
+                                    <th rowspan="2">Mã nhân viên</th>
+                                    <th rowspan="2">Họ và tên</th>
+                                    <th rowspan="2">Đơn vị quản lí</th>
+                                    <!-- Phân cấp chất lượng -->
+                                    <th rowspan="2">Cấp 1</th>
+                                    <th rowspan="2">Cấp 2</th>
+                                    <th rowspan="2">Cấp 3</th>
+                                    <th rowspan="2">Cấp 4</th>
+                                    <!-- Công tác kiểm định hiệu chuẩn -->
+                                    <th rowspan="2">Chu kì kiểm định hiệu chuẩn</th>
+                                    <th rowspan="2">Thời gian thực hiện KĐHC gần nhất</th>
+                                    <th rowspan="2">Đối tác thực hiện KĐHC</th>
+                                    <th rowspan="2">Ghi rõ KĐ hay HC</th>
+                                    <!-- Merger col -->
+                                    <th colspan="3">Kết quả kiểm định hay hiệu chuẩn</th>
+                                    <!-- Công tác bảo trì -->
+                                    <th rowspan="2">Thời gian thực hiện gần nhất</th>
+                                    <!-- Công tác bảo hành sửa chữa -->
+                                    <th rowspan="2">Thời gian hỏng gần nhất</th>
+                                    <th rowspan="2">Nguyên nhân hỏng</th>
+                                </tr>
+                                <tr>
+                                    <th>Đạt</th>
+                                    <th>Không Đạt</th>
+                                    <th>Nguyên nhân không đạt</th>
+                                </tr>
+                            </thead>
 
-                        <tbody>
-                        </tbody>
 
                     </table>
                 </tbody>

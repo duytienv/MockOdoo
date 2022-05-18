@@ -1,5 +1,17 @@
-.h1 {
+.header{
     text-align: center;
-    color : blue;
-    font-size : 20px;
+    font-size:20px;
+    font-family: "Times New Roman", Times, serif;
+}
+
+.h1 thead tr {
+    border-style: solid;
+}
+
+.h1 thead tr th{
+    text-align: center;
+    border-style: solid;
+    font-size:10px;
+    font-family: "Times New Roman", Times, serif;
+    padding:5px;
 }
