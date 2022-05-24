@@ -1,7 +1,7 @@
 from odoo import models, fields, api
 from odoo.exceptions import UserError
 from odoo.exceptions import ValidationError
-from datetime import datetime, timedelta
+from datetime import datetime, date
 class PhuongTienDo(models.Model):
     _name = "ptd.ptd"
     _description = "Create measuring device"
@@ -12,6 +12,7 @@ class PhuongTienDo(models.Model):
 
     asset_code = fields.Char("Mã QLTS")
     name = fields.Char("Tên thiết bị")
+    commodity_code=fields.Char(string="Mã thiết bị")
 
     classify = fields.Selection(
         string='Phân loại',
@@ -25,11 +26,11 @@ class PhuongTienDo(models.Model):
 
     model = fields.Text("Ký hiệu")
 
-    system_id = fields.Many2one("ptd.system",string="Mã hệ thống")
+    system_id = fields.Many2one("ptd.system", string="Mã hệ thống")
 
-    manufactor_id = fields.Many2one("ptd.manufactor",string="Nhà sản xuất")
+    manufactor_id = fields.Many2one("ptd.manufactor", string="Nhà sản xuất")
 
-    serial_number = fields.Text("Số hiệu", required =True)
+    serial_number = fields.Text("Số hiệu")
 
     unit_id = fields.Many2one("ptd.unit", string="Đơn vị tính")
 
@@ -37,11 +38,13 @@ class PhuongTienDo(models.Model):
 
 
 
-    year_use = fields.Date(string="Năm đưa vào sử dụng")
+    year_use = fields.Date(string="Ngày đưa vào sử dụng")
+
+    # technical_properties= fields.Char(string="Đặc tính kỹ thuật / đo lường")
     # year_test = fields.Date(string="Năm TEST")
     img = fields.Image("IMG")
 
-    description = fields.Text(string="Mô tả")
+    description = fields.Text(string="Mô tả",size=10)
 
     attach_file = fields.Binary("Tài liệu kỹ thuật")
 
@@ -58,8 +61,9 @@ class PhuongTienDo(models.Model):
     authorized_user = fields.Char(string="Người được phép sử dụng")
 
     license_user = fields.Binary(string="Giấy phép cho người sử dụng ")
+    level_BQP = fields.Boolean(string="Quản lý cấp BQP")
 
-    level1_unit = fields.Many2one('ptd.unit.manager', string="Đơn vị quản lý cấp 1",required = True)
+    level1_unit = fields.Many2one('ptd.unit.manager', string="Đơn vị quản lý cấp 1")
     install_location_id=fields.Many2one('ptd.install.location', string="Vị trí lắp đặt")
 
     ttr = fields.Text("TTR đầu tư")
@@ -87,11 +91,11 @@ class PhuongTienDo(models.Model):
         track_visibility='onchange',
         required=False)
     quality_level = fields.Selection(
-        string='Phâm cấp chất lượng',
-        selection=[('1', 'Level A'),
-                   ('2', 'Level AA'),
-                   ('3', 'Level B'),
-                   ('4', 'Level BB')],
+        string='Phân cấp chất lượng',
+        selection=[('1', 'Cấp 1'),
+                   ('2', 'Cấp 2'),
+                   ('3', 'Cấp 3'),
+                   ('4', 'Cấp 4')],
         default='1',
         tracking=True
     )
@@ -99,7 +103,7 @@ class PhuongTienDo(models.Model):
 
     transfer_reason = fields.Char("Nguyên nhân chuyển cấp")
 
-    maintenance_cycle = fields.Integer("Chu kỳ bảo dưỡng", require = True)
+    maintenance_cycle = fields.Integer("Chu kỳ bảo dưỡng")
 
     stand_link_type = fields.Selection(
         string='Loại liên kết chuẩn',
@@ -113,14 +117,13 @@ class PhuongTienDo(models.Model):
 
     # THÔNG TIN ĐẶC TÍNH KĨ THUẬT
 
-    technical_characteristics_ids= fields.One2many(
+    technical_characteristics_ids = fields.One2many(
         comodel_name='ptd.technical.characteristics',
         inverse_name='technical_characteristics_id',
         string='Thông tin đặc điểm kĩ thuật',
         tracking=True,
         track_visibility='onchange',
         required=False)
-
     # THÔNG TIN LIÊN KẾT CHUẨN
 
     check_or_correct_ids = fields.One2many(
@@ -154,32 +157,20 @@ class PhuongTienDo(models.Model):
         string="Năm sản xuất",
         default="",  # as a default value it would be 2019
     )
-    #
-    # @api.depends('year_use')
-    # def _test(self):
-    #     if self.year_use:
-    #         self.year_test = datetime.strptime(str(self.year_use), "%Y-%m-%d").date() + timedelta(days=10)
 
     @api.onchange('maintain_info_ids')
     def _onchange_maintain_info_ids(self):
-        print(self._origin.maintain_info_ids)
-        print(self.maintain_info_ids)
         len_origin = len(self._origin.maintain_info_ids)
         if len_origin > 0:
             if len_origin < len(self.maintain_info_ids):
                 if self.maintain_info_ids[len_origin].implementation_date < self._origin.maintain_info_ids[len_origin - 1].implementation_date:
                     raise UserError('Ngày thuc không hợp lệ')
             if len_origin == len(self.maintain_info_ids):
-                print(self.maintain_info_ids[0].implementation_date)
-                print(self._origin.maintain_info_ids[len_origin - 2].implementation_date)
                 if self.maintain_info_ids[0].implementation_date < self._origin.maintain_info_ids[len_origin - 2].implementation_date:
                     raise UserError('Ngày hỏng không hợp lệ')
 
-
     @api.onchange('broken_ids')
     def _onchange_broken_ids(self):
-        print(self._origin.broken_ids)
-        print(self.broken_ids)
         len_origin=len(self._origin.broken_ids)
         if len_origin>0:
             if len_origin<len(self.broken_ids):
@@ -195,20 +186,14 @@ class PhuongTienDo(models.Model):
     #thời gian giữa 2 lần kiểm định/HC
     @api.onchange('check_or_correct_ids')
     def _onchange_check_or_correct_ids(self):
-        # print(self._origin.check_or_correct_ids)
-        # print(self.check_or_correct_ids)
         len_origin = len(self._origin.check_or_correct_ids)
         if len_origin > 0:
             if len_origin < len(self.check_or_correct_ids):
-                # print(self.check_or_correct_ids[len_origin].implementation_date)
-                # print(self._origin.check_or_correct_ids[len_origin - 1].implementation_date)
                 if self.check_or_correct_ids[len_origin].implementation_date < self._origin.check_or_correct_ids[len_origin - 1].implementation_date:
                     raise UserError('Ngày thực hiện không hợp lệ')
                 if self.check_or_correct_ids[len_origin].validity_date < self._origin.check_or_correct_ids[len_origin - 1].validity_date:
                     raise UserError('Ngày hiệu lực không hợp lệ')
             if len_origin == len(self.check_or_correct_ids):
-                # print(self.check_or_correct_ids[0].implementation_date)
-                # print(self._origin.check_or_correct_ids[len_origin - 2].implementation_date)
                 if self.check_or_correct_ids[0].implementation_date < self._origin.check_or_correct_ids[len_origin - 2].implementation_date:
                     raise UserError('Ngày thực hiện không hợp lệ')
                 if self.check_or_correct_ids[0].validity_date < self._origin.check_or_correct_ids[len_origin - 2].validity_date:
@@ -220,13 +205,18 @@ class PhuongTienDo(models.Model):
 
     @api.model
     def create(self, vals):
-        if vals['asset_code'].isalnum() == False:
-            raise UserError("Mã QLTS: chỉ gồm ký tự chữ hoặc số")
-        if vals['serial_number'].isalnum() == False:
-            raise UserError("Số hiệu: chỉ gồm ký tự chữ hoặc số")
-        if vals['description']!=0 and len(vals['description'])>=300:
-            raise UserError(
-                "Mô tả tối đa 300 ký tự")
+        if 'asset_code' in vals:
+            if vals['asset_code']==False:
+                raise UserError("Trường: mã QLTS trống ")
+            else:
+                if vals['asset_code'].isalnum() == False:
+                    raise UserError("Mã QLTS: chỉ gồm ký tự chữ hoặc số")
+        if 'serial_number' in vals:
+            if vals['serial_number']==False:
+                raise UserError("Trường: Số hiệu trống ")
+            else:
+                if vals['serial_number'].isalnum() == False:
+                    raise UserError("Số hiệu chỉ gồm ký tự chữ hoặc số")
         if int(vals['year_manufacture']) > int(str(vals['year_use'][:4])):
             raise ValidationError("Năm đưa vào sử dụng không hợp lệ")
         else:
@@ -289,13 +279,34 @@ class PhuongTienDo(models.Model):
     def unlink(self):
         result = super(PhuongTienDo, self).unlink()
         print(result)
-    def test(self):
-        return {
-            'type': 'ir.actions.act_window',
-            'res_model': 'test',
-            'view_mode': 'form',
-            'target': 'new'
-        }
+
+    def display_kd_hc(self):
+        if not self.check_or_correct_ids:
+            return False
+        else:
+            return self.check_or_correct_ids[len(self.check_or_correct_ids)-1]
+
+    def display_time(self):
+        if not self.maintain_info_ids:
+            return False
+        else:
+            return self.maintain_info_ids[len(self.maintain_info_ids)-1]
+
+    def display_broken(self):
+        if not self.broken_ids:
+            return False
+        else:
+            return self.broken_ids[len(self.broken_ids)-1]
+
+    def display_thongtin(self):
+        if not self.technical_characteristics_ids:
+            return False
+        else:
+            return self.technical_characteristics_ids[len(self.technical_characteristics_ids)-1]
+
+    def print_report(self):
+        return self.env.ref('Mock_odoo.account_test1_id').report_action(self)
+
 
 
 

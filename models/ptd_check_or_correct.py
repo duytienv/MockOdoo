@@ -13,7 +13,7 @@ class PtdCheckOrCorrect(models.Model):
     )
     stand_link_type = fields.Selection(
         string='Loại liên kết chuẩn',
-        selection=[('Kiểm định', 'Kiểm định'), ('Hiệu chuẩn', 'Hiệu chỉnh')],
+        selection=[('1', 'Kiểm định'), ('2', 'Hiệu chỉnh')],
         tracking=True
     )
     implementation_date=fields.Date(string="Ngày thực hiện", require=True)
@@ -35,6 +35,8 @@ class PtdCheckOrCorrect(models.Model):
     def create(self, vals):
         if vals['name'] == 0:
             raise UserError("Kết quả không được để trống")
+        if vals['stand_link_type'] == 0:
+            raise UserError("Loại liên kết chuẩn không được để trống")
         if vals['organisation_id'] == 0:
             raise UserError("Đơn vị chứng nhận không được để trống")
         if vals['name']=='2':
@@ -44,10 +46,6 @@ class PtdCheckOrCorrect(models.Model):
             raise UserError("Số giấy chứng nhận không được để trống")
         if vals['certificate_number'].isalnum() == False:
             raise UserError("Số giấy chứng nhận chỉ gồm ký tự và số")
-
-        # if vals['asset_code'].isalnum() == False:
-        #     raise UserError("Mã QLTS: chỉ gồm ký tự chữ hoặc số")
-
         if vals['certificate'] == 0:
             raise UserError("Giấy chứng nhận không được để trống")
         if vals['validity_date'] == 0:

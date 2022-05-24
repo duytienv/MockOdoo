@@ -1,24 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!--        <record id="action_ptd_ptd_search" model="ir.ui.view">-->
-<!--            <field name="name">TEST</field>-->
-<!--            <field name="model">ptd.ptd</field>-->
-<!--            <field name="arch" type="xml">-->
-<!--                <search string="Manage measuring devices search">-->
-<!--                    <field name="asset_code" />-->
-<!--                    <field name="serial_number" />-->
-
-<!--                </search>-->
-<!--            </field>-->
-<!--        </record>-->
         <record id="view_ptd_ptd_form" model="ir.ui.view">
             <field name="model">ptd.ptd</field>
             <field name="arch" type="xml">
                 <form string="TEST">
                     <header>
 <!--                        <field name="quality_status" widget="statusbar" />-->
-                            <button string="TEST" name="test"
+                            <button string="TEST" name="print_report"
                                     type="object" class="oe_highlight"/>
                     </header>
 
@@ -26,7 +15,7 @@
                         <field name="img" widget="image" class="oe_avatar"
                           />
                         <div class="oe-title">
-                            <h1>Thiết bị đo </h1>
+                            <h1>Tạo mới thiết bị </h1>
                         </div>
                         <notebook>
                             <page string="Thông tin chung">
@@ -34,6 +23,7 @@
                                     <group>
                                         <group>
                                             <field name="name" />
+                                            <field name="commodity_code"/>
                                             <field name="asset_code"/>
                                             <field name="classify" />
                                             <field name="type_equip_id" />
@@ -48,6 +38,8 @@
                                             <field name="country_id" />
                                             <field name="year_manufacture" />
                                             <field name="year_use"/>
+<!--                                            <field name="technical_properties"/>-->
+<!--                                            <field name="year_test"/>-->
                                             <field name="description" />
                                             <field name="attach_file" />
                                             <field name="defense_ministry_equipment" />
@@ -65,7 +57,7 @@
                                         <field name="license_user" />
                                     </group>
                                     <group>
-
+                                        <field name="level_BQP"/>
                                         <field name="level1_unit" />
                                         <field name="install_location_id" />
                                         <field name="ttr" />
@@ -97,6 +89,12 @@
                                     <field name="check_or_correct_ids" />
                                 </group>
                             </page>
+<!--                            <page string="Thông tin quản lý chất lượng">-->
+<!--                                <group>-->
+<!--                                    <field name="stand_link_type" />-->
+<!--                                </group>-->
+<!--                                <field name="check_or_correct_ids" />-->
+<!--                            </page>-->
                             <page string="Thông tin đặc tính kỹ thuật">
                                 <field name="technical_characteristics_ids" />
                             </page>
@@ -131,18 +129,16 @@
                     <group expand="0" string="Group By">
                         <field name="name"/>
                         <field name="asset_code"/>
-<!--                        <field name="check_or_correct_ids" filter_domain="[('check_or_correct_ids.stand_link_type', 'ilike', self)]"/>-->
-<!--                        <field name="check_or_correct_ids" filter_domain="[('check_
-or_correct_ids.organisation_id', 'ilike', self)]"/>-->
-<!--                        <field name="maintain_info_ids" filter_domain="[('maintain_info_ids.name', 'ilike', self)]"/>-->
-                        <filter name="classify" string="Phân loại 1" domain="[('classify', '=', '1')]"/>
+                        <field name="check_or_correct_ids" filter_domain="[('check_or_correct_ids.stand_link_type', 'ilike', self)]"/>
+                        <field name="check_or_correct_ids" filter_domain="[('check_or_correct_ids.organisation_id', 'ilike', self)]"/>
+                        <field name="maintain_info_ids" filter_domain="[('maintain_info_ids.name', 'ilike', self)]"/>
                     </group>
                 </search>
             </field>
         </record>
 
         <record id="ptd_ptd_act" model="ir.actions.act_window">
-            <field name="name">Create devices</field>
+            <field name="name">Danh sách phương tiện đo</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">ptd.ptd</field>
             <field name="view_id" eval="False" />

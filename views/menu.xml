@@ -9,6 +9,11 @@
                         id="ptd_config_menu"
                         name="Configuration"
                         parent="ptd_management_menuroot"
+                        sequence="10"/>
+                <menuitem
+                        id="ptd_chucnang_menu"
+                        name="Chức năng"
+                        parent="ptd_management_menuroot"
                         sequence="5"/>
                 <menuitem
                         id="ptd_1"
@@ -31,9 +36,9 @@
                 <menuitem
                         id="ptd_4"
                         name="Tạo mới thiết bị đo"
-                        parent="ptd_management_menuroot"
+                        parent="ptd_chucnang_menu"
                         action="ptd_ptd_act"
-                        sequence="35"/>
+                        sequence="5"/>
 
                 <menuitem
                         id="ptd_5"
@@ -44,7 +49,7 @@
                 <menuitem
                         id="ptd_6"
                         name="Tạo mới hệ thống"
-                        parent="ptd_management_menuroot"
+                        parent="ptd_config_menu"
                         action="ptd_system_act"
                         sequence="15"/>
                 <menuitem

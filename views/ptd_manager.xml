@@ -7,6 +7,7 @@
             <field name="arch" type="xml">
                 <tree string="Thông tin người quản lý" default_order="id desc">
                     <field name="id"/>
+                    <field name="employee_code"/>
                     <field name="name"/>
                     <field name="unit_manager"/>
                     <field name="note"/>
@@ -20,6 +21,7 @@
                 <form string="Thông tin người quản lý">
                     <sheet>
                         <group>
+                            <field name="employee_code"/>
                             <field name="name"/>
                             <field name="unit_manager"/>
                             <field name="note"/>

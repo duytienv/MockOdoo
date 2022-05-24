@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_inbaocao_form" model="ir.ui.view">
+            <field name="name">In báo cáo</field>
+            <field name="model">ptd.print.report</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="type" />
+                        <field name="name" options="{'no_create': True, 'no_create_edit':True}" />
+                    </group>
+                    <footer>
+                        <button string="TEST" name="print_report"
+                                    type="object" class="oe_highlight"/>
+<!--                        <button string ="SEARCH" type="object" name ="search_view" class="oe_highlight"/>-->
+                        <button string ="CANCEL" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="ptd_print_act" model="ir.actions.act_window">
+            <field name="name">In báo cáo</field>
+            <field name="res_model">ptd.print.report</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="ptd_print_menu"
+              name="In báo cáo"
+              parent="ptd_chucnang_menu"
+              action="ptd_print_act"
+              sequence="15"/>
+    </data>
+</odoo>

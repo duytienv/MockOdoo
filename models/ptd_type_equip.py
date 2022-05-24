@@ -4,9 +4,10 @@ class PtdTypeEquipment(models.Model):
     _description = "Type of equipment management"
 
     id = fields.Char("ID")
-    name = fields.Char(string='Type of equipment management',required = True)
+    name = fields.Char(string='Chủng loại', required = True)
+    number = fields.Integer(string='Số lượng', required=True)
     device_group_id = fields.Many2one(
-        string = 'Device group',
+        string = 'Nhóm',
         comodel_name ='ptd.device.group',
         required = True,
         ondelete = 'restrict'

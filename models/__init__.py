@@ -3,7 +3,6 @@ from.import ptd_device_group
 from.import ptd_type_equip
 from.import ptd_check_or_correct
 from.import ptd_ptd
-from.import ptd_year_format
 from.import ptd_system
 from.import ptd_technical_characteristics
 from.import ptd_unit
