@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 {
-    'name': 'Mock Odoo',
+    'name': 'Mock PTĐ',
     'summary': """
             BEER
         """,
@@ -9,6 +9,7 @@
         TASYS
     """,
     'data': [
+        'data/update.xml',
         'wizard/print_report.xml',
         'wizard/timkiem.xml',
         'views/template.xml',

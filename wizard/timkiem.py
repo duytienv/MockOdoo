@@ -53,8 +53,8 @@ class Test(models.TransientModel):
         return {
             'name': ('Tìm kiếm thiết bị'),
             'view_mode': 'tree',
-            'views': [(self.env.ref('Mock_odoo.action_ptd_ptd_tree').id, 'tree'),
-                      (self.env.ref('Mock_odoo.view_ptd_ptd_form').id, 'form')],
+            'views': [(self.env.ref('mock_odoo1.action_ptd_ptd_tree').id, 'tree'),
+                      (self.env.ref('mock_odoo1.view_ptd_ptd_form').id, 'form')],
             'view_id': False,
             'domain': domain,
             'res_model': 'ptd.ptd',

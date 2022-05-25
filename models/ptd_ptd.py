@@ -1,7 +1,7 @@
 from odoo import models, fields, api
 from odoo.exceptions import UserError
 from odoo.exceptions import ValidationError
-from datetime import datetime, date
+from datetime import datetime, timedelta,date
 class PhuongTienDo(models.Model):
     _name = "ptd.ptd"
     _description = "Create measuring device"
@@ -177,8 +177,13 @@ class PhuongTienDo(models.Model):
         string="Năm sản xuất",
         default="",  # as a default value it would be 2019
     )
-
-
+    status_bd=fields.Selection(
+        string='Trạng thái BD',
+        selection=[('1', 'Sắp đến hạn'),
+                   ('2', 'Qúa hạn'),
+                   ('0', 'Chưa có lịch sử')],
+        tracking=True
+    )
 
     @api.onchange('maintain_info_ids')
     def _onchange_maintain_info_ids(self):
@@ -188,8 +193,29 @@ class PhuongTienDo(models.Model):
                 if self.maintain_info_ids[len_origin].implementation_date < self._origin.maintain_info_ids[len_origin - 1].implementation_date:
                     raise UserError('Ngày thuc không hợp lệ')
             if len_origin == len(self.maintain_info_ids):
-                if self.maintain_info_ids[0].implementation_date < self._origin.maintain_info_ids[len_origin - 2].implementation_date:
-                    raise UserError('Ngày hỏng không hợp lệ')
+                if len_origin==2:
+                    if self.maintain_info_ids[0].implementation_date < self._origin.maintain_info_ids[len_origin - 2].implementation_date:
+                        raise UserError('Ngày hỏng không hợp lệ')
+
+    @api.onchange('maintain_info_ids')
+    def _status_bd(self):
+        if len(self.maintain_info_ids):
+            print(self.maintenance_cycle)
+            #day1 là ngày hết hiệu lực= ngày thực hiện + chuky*30 ngày
+            day1 = self.maintain_info_ids[len(self.maintain_info_ids)-1].implementation_date +timedelta(days =self.maintenance_cycle*30)
+            #day2 bằng day1 - ngày hiện tại
+            day2= day1 - date.today()
+            if int(day2.days)> 30:
+                self.status_bd='1'
+            else:
+                self.status_bd='2'
+        else:
+            self.status_bd='0'
+
+    # @api.onchange('validity_date')
+    # def _expiry_date(self):
+    #     if self.validity_date:
+    #         self.expiry_date=self.validity_date + timedelta(days=180)
 
 
 
@@ -306,20 +332,11 @@ class PhuongTienDo(models.Model):
         else:
             return self.maintain_info_ids[len(self.maintain_info_ids)-1]
 
-    # def display_broken(self):
-    #     if not self.broken_ids:
-    #         return False
-    #     else:
-    #         return self.broken_ids[len(self.broken_ids)-1]
-
     def display_thongtin(self):
         if not self.technical_characteristics_ids:
             return False
         else:
             return self.technical_characteristics_ids[len(self.technical_characteristics_ids)-1]
-
-    def print_report(self):
-        print(self.env.ref('Mock_odoo.ptd_ptd_act').search()[0])
 
 
 

@@ -1,11 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type = "text / css" href="/Mock_odoo/static/css/vote.css" ?>
+<?xml-stylesheet type = "text / css" href="/mock_odoo1/static/css/vote.css" ?>
 <odoo>
     <data>
         <record id="bms_paperformat" model="report.paperformat">
             <field name="name">Baocao</field>
             <field name="default" eval="True"/>
             <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">10</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">25</field>
+            <field name="margin_right">20</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">0</field>
+            <field name="dpi">96</field>
+        </record>
+        <record id="bms_paperformat_a3" model="report.paperformat">
+            <field name="name">Baocaochitiet</field>
+            <field name="default" eval="True"/>
+            <field name="format">A3</field>
             <field name="page_height">0</field>
             <field name="page_width">0</field>
             <field name="orientation">Landscape</field>
@@ -308,7 +323,7 @@
                             <tr>
                                 <th>STT</th>
                                 <th>Mã QLTS</th>
-                                <th>Tên trang bị ĐL-TN</th>
+                                <th>Tên trang bị ĐLTN</th>
                                 <th>Ký hiệu</th>
                                 <th>số hiệu</th>
                                 <th>Nơi SX</th>
@@ -544,10 +559,10 @@
             model = "ptd.ptd"
             string ="Báo cáo chi tiết phương tiện đo"
             report_type="qweb-pdf"
-            name = "Mock_odoo.BaoCaoChiTiet"
+            name = "mock_odoo1.BaoCaoChiTiet"
             file="Báo cáo chi tiết"
             attachment_use="True"
-            paperformat="bms_paperformat"/>
+            paperformat="bms_paperformat_a3"/>
 
 
         <report
@@ -555,7 +570,7 @@
             model = "ptd.ptd"
             string ="Báo cáo PTĐ có thông tin sai lệch"
             report_type="qweb-pdf"
-            name = "Mock_odoo.BaoCaoThongTinSaiLech"
+            name = "mock_odoo1.BaoCaoThongTinSaiLech"
             file="Báo cáo PTĐ có thông tin sai lệch"
             attachment_use="True"
             paperformat="bms_paperformat"/>
@@ -565,7 +580,7 @@
             model = "ptd.ptd"
             string ="Báo cáo tổng hợp PTĐ cấp BQP"
             report_type="qweb-pdf"
-            name = "Mock_odoo.BaoCaoTongHopPTDCapBQP"
+            name = "mock_odoo1.BaoCaoTongHopPTDCapBQP"
             file="Báo cáo tổng hợp PTĐ cấp BQP"
             attachment_use="True"
             paperformat="bms_paperformat"/>
@@ -575,7 +590,7 @@
             model = "ptd.ptd"
             string ="Báo cáo sổ quản lý trang bị đo lường - thử nghiệm"
             report_type="qweb-pdf"
-            name = "Mock_odoo.BaoCaoSoQuanLyDonVi"
+            name = "mock_odoo1.BaoCaoSoQuanLyDonVi"
             file="Báo cáo sổ quản lý trang bị đo lường - thử nghiệm"
             attachment_use="True"
             paperformat="bms_paperformat"/>
@@ -587,32 +602,32 @@
             model = "ptd.ptd"
             string ="Báo cáo chi tiết phương tiện đo (xlsx)"
             report_type="xlsx"
-            name = "Mock_odoo.baocaochitiet_xls"
-            file = "Mock_odoo.baocaochitiet_xls"
+            name = "mock_odoo1.baocaochitiet_xls"
+            file = "mock_odoo1.baocaochitiet_xls"
         />
         <report
             id="account_test2_id_xls"
             model = "ptd.ptd"
             string ="Báo cáo thông tin sai lệch (xlsx)"
             report_type="xlsx"
-            name = "Mock_odoo.baocaothongtinsailech_xls"
-            file = "Mock_odoo.baocaothongtinsailech_xls"
+            name = "mock_odoo1.baocaothongtinsailech_xls"
+            file = "mock_odoo1.baocaothongtinsailech_xls"
         />
         <report
             id="account_test3_id_xls"
             model = "ptd.ptd"
             string ="Báo cáo tổng hợp PTD cấp BQP (xlsx)"
             report_type="xlsx"
-            name = "Mock_odoo.baocaotonghopptdcapbqp_xls"
-            file = "Mock_odoo.baocaotonghopptdcapbqp_xls"
+            name = "mock_odoo1.baocaotonghopptdcapbqp_xls"
+            file = "mock_odoo1.baocaotonghopptdcapbqp_xls"
         />
         <report
             id="account_test4_id_xls"
             model = "ptd.ptd"
             string ="Báo cáo sổ quản lý trang bị đo lường - thử nghiệm (xlsx)"
             report_type="xlsx"
-            name = "Mock_odoo.baocaosoquanlydonvi_xls"
-            file = "Mock_odoo.baocaosoquanlydonvi_xls"
+            name = "mock_odoo1.baocaosoquanlydonvi_xls"
+            file = "mock_odoo1.baocaosoquanlydonvi_xls"
         />
     </data>
 </odoo>

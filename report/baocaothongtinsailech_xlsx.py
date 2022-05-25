@@ -1,7 +1,7 @@
 from odoo import models
 
 class BaoCaoChiTietXlsx(models.AbstractModel):
-    _name = 'report.Mock_odoo.baocaothongtinsailech_xls'
+    _name = 'report.mock_odoo1.baocaothongtinsailech_xls'
     _inherit = 'report.report_xlsx.abstract'
 
     def generate_xlsx_report(self, workbook, data, partners):

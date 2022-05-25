@@ -11,9 +11,9 @@
                         <field name="record_id" />
                     </group>
                     <footer>
-                        <button string="Định dạng pdf" name="print_report"
+                        <button string="Định dạng Excel" name="print_report_csv"
                                     type="object" class="oe_highlight"/>
-                        <button string ="Định dạng cxv" type="object" name ="print_report" class="oe_highlight"/>
+                        <button string ="Định dạng Pdf" type="object" name ="print_report_pdf" class="oe_highlight"/>
                         <button string ="CANCEL" special="cancel"/>
                     </footer>
                 </form>
