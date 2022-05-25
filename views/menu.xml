@@ -83,5 +83,15 @@
                           parent="ptd_config_menu"
                           action="ptd_unit_act"
                           sequence="38"/>
+                <menuitem id="ptd_print_menu"
+                          name="In báo cáo"
+                          parent="ptd_chucnang_menu"
+                          action="ptd_print_act"
+                          sequence="15"/>
+                <menuitem id="ptd_oidoioi"
+                          name="Tìm kiếm phương tiện đo"
+                          parent="ptd_chucnang_menu"
+                          action="timkiem_act"
+                          sequence="10"/>
         </data>
 </odoo>

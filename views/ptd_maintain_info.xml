@@ -7,9 +7,9 @@
             <field name="arch" type="xml">
                 <tree string="Thông tin bảo dưỡng" default_order="id desc">
                     <field name="id"/>
-<!--                    <field name="name"/>-->
+                    <field name="name"/>
                     <field name="implementation_date"/>
-<!--                    <field name="cost"/>-->
+                    <field name="cost"/>
                     <field name="attach_file"/>
                     <field name="note"/>
                 </tree>
@@ -22,11 +22,15 @@
                 <form string="Thông tin bảo dưỡng">
                     <sheet>
                         <group>
-                            <field name="name"/>
-                            <field name="implementation_date"/>
-                            <field name="cost"/>
-                            <field name="attach_file"/>
-                            <field name="note"/>
+                            <group>
+                                <field name="name"/>
+                                <field name="implementation_date"/>
+                            </group>
+                            <group>
+                                <field name="cost"/>
+                                <field name="attach_file"/>
+                                <field name="note"/>
+                            </group>
                         </group>
                     </sheet>
                 </form>

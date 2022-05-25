@@ -10,15 +10,14 @@ class PhuongTienDo(models.Model):
     # THÔNG TIN CHUNG
 
 
-    asset_code = fields.Char("Mã QLTS")
+    asset_code = fields.Text("Mã QLTS",size=8)
     name = fields.Char("Tên thiết bị")
     commodity_code=fields.Char(string="Mã thiết bị")
 
     classify = fields.Selection(
         string='Phân loại',
         selection=[('1', 'Thiết bị chính'), ('2', 'Thiết bị phụ')],
-        tracking=True,
-        required = True
+        tracking=True
     )
     type_equip_id = fields.Many2one("ptd.type.equip", "Chủng loại thiết bị")
 
@@ -39,12 +38,9 @@ class PhuongTienDo(models.Model):
 
 
     year_use = fields.Date(string="Ngày đưa vào sử dụng")
-
-    # technical_properties= fields.Char(string="Đặc tính kỹ thuật / đo lường")
-    # year_test = fields.Date(string="Năm TEST")
     img = fields.Image("IMG")
 
-    description = fields.Text(string="Mô tả",size=10)
+    description = fields.Char(string="Mô tả",size=300)
 
     attach_file = fields.Binary("Tài liệu kỹ thuật")
 
@@ -76,20 +72,15 @@ class PhuongTienDo(models.Model):
 
     quality_status = fields.Selection(
         string='Status*',
-        selection=[('use', 'Use'),
-                   ('repair', 'Repair'),
-                   ('damaged', 'Damaged'),
-                   ('liquidated', 'Liquidated')],
+        selection=[('use', 'Đang sử dụng'),
+                   ('repair', 'Đang sửa chữa'),
+                   ('damaged', 'Hư hỏng'),
+                   ('liquidated', 'Đã thanh lý')],
         tracking=True
     )
+    fail_time = fields.Date(string="Ngày hỏng", require = True)
+    fail_reason =fields.Text(string="Nguyên nhân hỏng", require = True)
 
-    broken_ids= fields.One2many(
-        comodel_name='ptd.broken',
-        inverse_name='broken_id',
-        string='Lịch sử hỏng',
-        tracking=True,
-        track_visibility='onchange',
-        required=False)
     quality_level = fields.Selection(
         string='Phân cấp chất lượng',
         selection=[('1', 'Cấp 1'),
@@ -113,7 +104,7 @@ class PhuongTienDo(models.Model):
         default='1',
         tracking=True
     )
-    stand_link_cycle = fields.Integer("Chu kỳ liên kết chuẩn (tháng)")
+    stand_link_cycle = fields.Integer("Chu kỳ liên kết chuẩn")
 
     # THÔNG TIN ĐẶC TÍNH KĨ THUẬT
 
@@ -134,6 +125,22 @@ class PhuongTienDo(models.Model):
         track_visibility='onchange',
         required=False)
 
+
+    check_or_correct = fields.Integer(string="Đã KĐ/HC")
+    type_of = fields.Integer(string="Loại liên kết")
+    @api.onchange('check_or_correct_ids')
+    def _check_correct_change(self):
+        if len(self.check_or_correct_ids):
+            self.check_or_correct = 1
+            if self.check_or_correct_ids[len(self.check_or_correct_ids)-1].stand_link_type=='1':
+                self.type_of=1
+            if self.check_or_correct_ids[len(self.check_or_correct_ids) - 1].stand_link_type == '2':
+                self.type_of=0
+            if self.check_or_correct_ids[len(self.check_or_correct_ids) - 1].stand_link_type == '3':
+                self.type_of=2
+        else:
+            self.check_or_correct = 0
+
     # THÔNG TIN BẢO DƯỠNG
 
     maintain_info_ids = fields.One2many(
@@ -143,6 +150,19 @@ class PhuongTienDo(models.Model):
         tracking=True,
         track_visibility='onchange',
         required=False)
+
+    maintain_info = fields.Integer(string="Đã bảo dưỡng")
+    @api.onchange('maintain_info_ids')
+    def _maintain_change(self):
+        if len(self.maintain_info_ids):
+            self.maintain_info = 1
+        else:
+            self.maintain_info = 0
+
+
+
+
+
 
     def year_selection(self):
         year = 2000
@@ -158,6 +178,8 @@ class PhuongTienDo(models.Model):
         default="",  # as a default value it would be 2019
     )
 
+
+
     @api.onchange('maintain_info_ids')
     def _onchange_maintain_info_ids(self):
         len_origin = len(self._origin.maintain_info_ids)
@@ -169,18 +191,6 @@ class PhuongTienDo(models.Model):
                 if self.maintain_info_ids[0].implementation_date < self._origin.maintain_info_ids[len_origin - 2].implementation_date:
                     raise UserError('Ngày hỏng không hợp lệ')
 
-    @api.onchange('broken_ids')
-    def _onchange_broken_ids(self):
-        len_origin=len(self._origin.broken_ids)
-        if len_origin>0:
-            if len_origin<len(self.broken_ids):
-                if self.broken_ids[len_origin].fail_time < self._origin.broken_ids[len_origin -1].fail_time:
-                    raise UserError('Ngày hỏng không hợp lệ')
-            if len_origin == len(self.broken_ids):
-                print(self.broken_ids[0].fail_time)
-                print(self._origin.broken_ids[len_origin - 2].fail_time)
-                if self.broken_ids[0].fail_time < self._origin.broken_ids[len_origin -2].fail_time:
-                    raise UserError('Ngày hỏng không hợp lệ')
 
 
     #thời gian giữa 2 lần kiểm định/HC
@@ -198,43 +208,54 @@ class PhuongTienDo(models.Model):
                     raise UserError('Ngày thực hiện không hợp lệ')
                 if self.check_or_correct_ids[0].validity_date < self._origin.check_or_correct_ids[len_origin - 2].validity_date:
                     raise UserError('Ngày hiệu lực không hợp lệ')
-
-
-
-
-
     @api.model
     def create(self, vals):
-        if 'asset_code' in vals:
-            if vals['asset_code']==False:
-                raise UserError("Trường: mã QLTS trống ")
-            else:
-                if vals['asset_code'].isalnum() == False:
-                    raise UserError("Mã QLTS: chỉ gồm ký tự chữ hoặc số")
-        if 'serial_number' in vals:
-            if vals['serial_number']==False:
-                raise UserError("Trường: Số hiệu trống ")
-            else:
-                if vals['serial_number'].isalnum() == False:
-                    raise UserError("Số hiệu chỉ gồm ký tự chữ hoặc số")
-        if int(vals['year_manufacture']) > int(str(vals['year_use'][:4])):
-            raise ValidationError("Năm đưa vào sử dụng không hợp lệ")
+        #trang thai là hư hỏng
+        if vals['quality_status']=='damaged':
+            if vals['fail_time']==False:
+                raise UserError("Trạng thái Hỏng không được để trống ngày hỏng")
+            if vals['fail_reason']==False:
+                raise UserError("Trạng thái Hỏng không được để trống nguyên nhân hỏng")
+
+        #trường mã mã QLTS
+        if vals['asset_code']==False:
+            raise UserError("Trường: mã QLTS trống ")
         else:
-            result = super(PhuongTienDo, self).create(vals)
+            if vals['asset_code'].isalnum() == False:
+                raise UserError("Mã QLTS: chỉ gồm ký tự chữ hoặc số")
+
+        # trường mã thiết bị
+        if vals['commodity_code'] == False:
+            raise UserError("Trường: mã thiết bị trống ")
+        else:
+            if vals['commodity_code'].isalnum() == False:
+                raise UserError("Mã thiết bị: chỉ gồm ký tự chữ hoặc số")
+
+        # số hiệu
+        if vals['serial_number']==False:
+            raise UserError("Trường: Số hiệu trống ")
+        else:
+            if vals['serial_number'].isalnum() == False:
+                raise UserError("Số hiệu chỉ gồm ký tự chữ hoặc số")
+
+        if vals['year_manufacture']!=False and vals['year_use']!=False:
+            if int(vals['year_manufacture']) > int(str(vals['year_use'][:4])):
+                raise ValidationError("Năm đưa vào sử dụng không hợp lệ")
+        result = super(PhuongTienDo, self).create(vals)
         return result
 
     def write(self, vals):
         # update Mã QLTS
         if 'asset_code' in vals:
-            if len(vals['asset_code'])==0:
-                raise UserError("Trường: asset_number trống ")
+            print(vals['asset_code'],type(vals['asset_code']))
+            if vals['asset_code']=='':
+                raise UserError("Trường: asset_code trống ")
             else:
                 if vals['asset_code'].isalnum() == False:
                     raise UserError("Mã QLTS: chỉ gồm ký tự chữ hoặc số")
         #update số hiệu thiết bị
-        # print(len(vals['serial_number']))
         if 'serial_number' in vals:
-            if len(vals['serial_number'])==0:
+            if vals['serial_number']=='':
                 raise UserError("Trường: serial_number trống ")
             else:
                 if vals['serial_number'].isalnum() == False:
@@ -256,24 +277,17 @@ class PhuongTienDo(models.Model):
 
         # update lại ngày chuyển cấp và nguyên nhân mỗi lần thay đổi phân cấp
         if 'quality_level' in vals:
-            if 'transfer_reason' not in vals or 'transfer_date' not in vals:
+            if 'transfer_date'not in vals:
                 raise UserError(
-                   "Nhập lại đầy đủ nguyên nhân và ngày chuyển cấp")
-            else:
-                if vals['transfer_reason']==False:
-                    raise UserError(
-                        "Nhập lại nguyên nhân chuyển cấp")
-                if vals['transfer_date']==False:
-                    raise UserError(
-                        "Nhập lại ngày chuyển cấp")
-                else:
-                    result = super(PhuongTienDo, self).write(vals)
+                    "Nhập lại ngày chuyển cấp")
+            if 'transfer_reason'not in vals:
+                raise UserError(
+                    "Nhập lại nguyên nhân chuyển cấp")
         else:
             if 'transfer_reason' in vals or 'transfer_date' in vals:
                 raise UserError(
                    "Không được sửa nguyên nhân và ngày thay đổi phân cấp chất lượng")
-            else:
-                result = super(PhuongTienDo, self).write(vals)
+        result = super(PhuongTienDo, self).write(vals)
         return result
 
     def unlink(self):
@@ -292,11 +306,11 @@ class PhuongTienDo(models.Model):
         else:
             return self.maintain_info_ids[len(self.maintain_info_ids)-1]
 
-    def display_broken(self):
-        if not self.broken_ids:
-            return False
-        else:
-            return self.broken_ids[len(self.broken_ids)-1]
+    # def display_broken(self):
+    #     if not self.broken_ids:
+    #         return False
+    #     else:
+    #         return self.broken_ids[len(self.broken_ids)-1]
 
     def display_thongtin(self):
         if not self.technical_characteristics_ids:
@@ -305,7 +319,7 @@ class PhuongTienDo(models.Model):
             return self.technical_characteristics_ids[len(self.technical_characteristics_ids)-1]
 
     def print_report(self):
-        return self.env.ref('Mock_odoo.account_test1_id').report_action(self)
+        print(self.env.ref('Mock_odoo.ptd_ptd_act').search()[0])
 
 
 

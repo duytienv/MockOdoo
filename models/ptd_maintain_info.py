@@ -7,8 +7,7 @@ class PtdMaintainInfo(models.Model):
     _name = "ptd.maintain.info"
     _description = "Maintain Information"
 
-    id = fields.Integer(string="Mã ", required=True)
-    name = fields.Char(string="Người thực hiện",required = True)
+    name = fields.Char(string="Người thực hiện")
     cost = fields.Char(string="Giá thành")
     implementation_date = fields.Date(string="Ngày thực hiện")
     attach_file = fields.Binary(string="File đính kèm")

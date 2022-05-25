@@ -8,12 +8,12 @@
                 <form>
                     <group>
                         <field name="type" />
-                        <field name="name" options="{'no_create': True, 'no_create_edit':True}" />
+                        <field name="record_id" />
                     </group>
                     <footer>
-                        <button string="TEST" name="print_report"
+                        <button string="Định dạng pdf" name="print_report"
                                     type="object" class="oe_highlight"/>
-<!--                        <button string ="SEARCH" type="object" name ="search_view" class="oe_highlight"/>-->
+                        <button string ="Định dạng cxv" type="object" name ="print_report" class="oe_highlight"/>
                         <button string ="CANCEL" special="cancel"/>
                     </footer>
                 </form>
@@ -25,12 +25,9 @@
             <field name="res_model">ptd.print.report</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
+<!--            <field name="binding_model_id" ref = "model_ptd_print_report"/>-->
         </record>
 
-        <menuitem id="ptd_print_menu"
-              name="In báo cáo"
-              parent="ptd_chucnang_menu"
-              action="ptd_print_act"
-              sequence="15"/>
+
     </data>
 </odoo>

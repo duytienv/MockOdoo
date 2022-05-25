@@ -2,33 +2,36 @@
 <odoo>
     <data>
         <record id="view_test_form" model="ir.ui.view">
-            <field name="name">Tìm kiếm</field>
+            <field name="name">Danh sách phương tiện đo</field>
             <field name="model">ptd.timkiem</field>
             <field name="arch" type="xml">
                 <form>
                     <group>
-                        <field name="asset_code" />
-                        <field name="name_device" />
+                        <group>
+                            <field name="commodity_code" />
+                            <field name="name_device" />
+                        </group>
+                        <group>
+                            <field name="status"/>
+                            <field name="type_of"/>
+                            <field name="maintain"/>
+                        </group>
                     </group>
                     <footer>
-                        <button string ="SEARCH" type="object" name ="search_view" class="oe_highlight"/>
-                        <button string ="CANCEL" special="cancel"/>
+                        <button string ="Tìm kiếm" type="object" name ="search_view" class="oe_highlight"/>
+                        <button string ="Hủy" special="cancel"/>
                     </footer>
                 </form>
             </field>
         </record>
 
         <record id="timkiem_act" model="ir.actions.act_window">
-            <field name="name">Tìm kiếm</field>
+            <field name="name">Tìm kiếm phương tiện đo</field>
             <field name="res_model">ptd.timkiem</field>
             <field name="view_mode">form</field>
+            <field name="context">{'default_status':'2','default_type_of':'2', 'default_maintain':'2'}</field>
             <field name="target">new</field>
         </record>
 
-        <menuitem id="ptd_oidoioi"
-                  name="Tìm kiếm"
-                  parent="ptd_chucnang_menu"
-                  action="timkiem_act"
-                  sequence="10"/>
     </data>
 </odoo>

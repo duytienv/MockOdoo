@@ -1,8 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 ,,,,,,,
-access_model_muctieu_nhanvien,model_access_muctieu_nhanvien,model_ptd_broken,group_nhanvien,0,1,1,1
-access_model_muctieu_quanly,model_access_muctieu_quanly,model_ptd_broken,group_quanly,1,1,1,1
-,,,,,,,
 ,,,,,,,
 access_model_chuky_nhanvien2,model_access_chuky_nhanvien2,model_ptd_check_or_correct,group_nhanvien,1,0,0,0
 access_model_chuky_quanly2,model_access_chuky_quanly2,model_ptd_check_or_correct,group_quanly,1,1,1,1

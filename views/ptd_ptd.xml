@@ -15,7 +15,7 @@
                         <field name="img" widget="image" class="oe_avatar"
                           />
                         <div class="oe-title">
-                            <h1>Tạo mới thiết bị </h1>
+                            <h1>Thông tin tiết bị </h1>
                         </div>
                         <notebook>
                             <page string="Thông tin chung">
@@ -31,15 +31,13 @@
                                             <field name="serial_number" />
                                             <field name="system_id" />
                                             <field name="manufactor_id"/>
-                                            <field name="model" />
                                         </group>
                                         <group>
+                                            <field name="model" />
                                             <field name="unit_id" />
                                             <field name="country_id" />
                                             <field name="year_manufacture" />
                                             <field name="year_use"/>
-<!--                                            <field name="technical_properties"/>-->
-<!--                                            <field name="year_test"/>-->
                                             <field name="description" />
                                             <field name="attach_file" />
                                             <field name="defense_ministry_equipment" />
@@ -70,35 +68,31 @@
                                 <group>
                                     <group>
                                         <field name="quality_status"/>
-<!--                                        <field name="fail_time"-->
-<!--                                               attrs="{'invisible': [('quality_status','!=','damaged')]}"/>-->
-<!--                                        <field name="fail_reason"-->
-<!--                                               attrs="{'invisible': [('quality_status','!=','damaged')]}"/>-->
-<!--&lt;!&ndash;                                        <field name="fail_day" />&ndash;&gt;-->
+                                        <field name="fail_time"
+                                               attrs="{'invisible': [('quality_status','!=','damaged')]}"/>
+                                        <field name="fail_reason"
+                                               attrs="{'invisible': [('quality_status','!=','damaged')]}"/>
                                         <field name="quality_level" />
                                         <field name="transfer_date" />
-                                        <field name="transfer_reason" />
+                                        <field name="type_of" readonly="1" force_save = "1"/>
+
                                     </group>
                                     <group>
+                                        <field name="transfer_reason" />
                                         <field name="maintenance_cycle" />
-                                        <field name="stand_link_type" />
                                         <field name="stand_link_cycle" />
+                                        <field name="check_or_correct" readonly="1" force_save = "1"/>
                                     </group>
-                                    <field name="broken_ids"
-                                           attrs="{'invisible': [('quality_status','!=','damaged')]}"/>
                                     <field name="check_or_correct_ids" />
                                 </group>
                             </page>
-<!--                            <page string="Thông tin quản lý chất lượng">-->
-<!--                                <group>-->
-<!--                                    <field name="stand_link_type" />-->
-<!--                                </group>-->
-<!--                                <field name="check_or_correct_ids" />-->
-<!--                            </page>-->
                             <page string="Thông tin đặc tính kỹ thuật">
                                 <field name="technical_characteristics_ids" />
                             </page>
                             <page string="Thông tin bảo dưỡng">
+                                <group>
+                                    <field name="maintain_info" readonly="1" force_save = "1"/>
+                                </group>
                                 <field name="maintain_info_ids" />
                             </page>
                         </notebook>
@@ -112,28 +106,19 @@
             <field name="name">Manage measuring devices</field>
             <field name="model">ptd.ptd</field>
             <field name="arch" type="xml">
-                <tree string="Manage measuring devices" default_order="id desc">
+                <tree string="Manage measuring devices" default_order="id desc"
+                      >
                     <field name="id" />
-                    <field name="asset_code" />
-                    <field name="description" />
-                    <field name="quality_status" />
+                    <field name="name"/>
+                    <field name="commodity_code"  />
+                    <field name="quality_status" widget="badge"
+                           decoration-success= "quality_status=='use'"
+                           decoration-danger= "quality_status=='damaged'"
+                           decoration-warning="quality_status=='repair'"
+                           decoration-muted ="quality_status=='liquidated'" />
+                    <field name="level_BQP"/>
+                    <field name="description"/>
                 </tree>
-            </field>
-        </record>
-
-        <record id="action_ptd_ptd_search" model="ir.ui.view">
-            <field name="name">Tạo mới PTĐ</field>
-            <field name="model">ptd.ptd</field>
-            <field name="arch" type="xml">
-                <search string="Tạo mới PTĐ">
-                    <group expand="0" string="Group By">
-                        <field name="name"/>
-                        <field name="asset_code"/>
-                        <field name="check_or_correct_ids" filter_domain="[('check_or_correct_ids.stand_link_type', 'ilike', self)]"/>
-                        <field name="check_or_correct_ids" filter_domain="[('check_or_correct_ids.organisation_id', 'ilike', self)]"/>
-                        <field name="maintain_info_ids" filter_domain="[('maintain_info_ids.name', 'ilike', self)]"/>
-                    </group>
-                </search>
             </field>
         </record>
 
@@ -141,6 +126,7 @@
             <field name="name">Danh sách phương tiện đo</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">ptd.ptd</field>
+            <field name="context">{'default_check_or_correct':'20'}</field>
             <field name="view_id" eval="False" />
         </record>
 

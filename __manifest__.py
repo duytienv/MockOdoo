@@ -15,7 +15,6 @@
         'report/baocao.xml',
         'security/account_security.xml',
         'security/ir.model.access.csv',
-        'views/ptd_broken.xml',
         'views/ptd_manager.xml',
         'views/ptd_manufactor.xml',
         'views/ptd_maintain_info.xml',
@@ -37,7 +36,7 @@
     'category': 'Viettel Corporation',
     'license': 'LGPL-3',
     'sequence': 1,
-    'depends': ['base', 'mail','hr'],
+    'depends': ['base', 'mail','hr','report_xlsx'],
     'installable': True,
     'application': True,
     'auto_install': False

@@ -13,15 +13,15 @@ class PtdCheckOrCorrect(models.Model):
     )
     stand_link_type = fields.Selection(
         string='Loại liên kết chuẩn',
-        selection=[('1', 'Kiểm định'), ('2', 'Hiệu chỉnh')],
+        selection=[('1', 'Kiểm định'), ('2', 'Hiệu chỉnh'),('3','Kiểm tra kỹ thuật đo lường')],
         tracking=True
     )
     implementation_date=fields.Date(string="Ngày thực hiện", require=True)
     validity_date = fields.Date(string="Ngày hiệu lực theo GCN")
     expiry_date = fields.Date("Ngày hết hạn theo GCN")
-    organisation_id = fields.Text(string="Đơn vị chứng nhận")
-    reason_not_pass = fields.Text(string="Nguyên nhân không đạt")
-    certificate_number = fields.Text(string="Số giấy chứng nhận")
+    organisation_id = fields.Char(string="Đơn vị chứng nhận")
+    reason_not_pass = fields.Char(string="Nguyên nhân không đạt")
+    certificate_number = fields.Char(string="Số giấy chứng nhận")
     certificate = fields.Binary(string="Giấy chứng nhận")
     performer = fields.Char(string="Người thực hiện")
     note = fields.Text(string = 'Note')
@@ -50,8 +50,6 @@ class PtdCheckOrCorrect(models.Model):
             raise UserError("Giấy chứng nhận không được để trống")
         if vals['validity_date'] == 0:
             raise UserError("Ngày hiệu lực theo GCN không được để trống")
-        if vals['expiry_date'] == 0:
-            raise UserError("Ngày hết hạn theo GCN không được để trống")
         if vals['implementation_date']==0:
             raise UserError("Ngày thực hiện không được để trống")
         if vals['stand_link_type'] == 0:
@@ -61,8 +59,6 @@ class PtdCheckOrCorrect(models.Model):
         #điều kiện tạo ngày thực hiện, hiệu lực, hết hạn
         if vals['implementation_date']>vals['validity_date']:
             raise UserError("Ngày hiệu lực không hợp lệ")
-        if vals['validity_date']> vals['expiry_date']:
-            raise UserError("Ngày hết hạn không hợp lệ")
         else:
             result = super(PtdCheckOrCorrect, self).create(vals)
         return result
@@ -77,11 +73,6 @@ class PtdCheckOrCorrect(models.Model):
             print(vals['organisation_id'])
             if len(vals['organisation_id']) == 0:
                 raise UserError("Đơn vị chứng nhận không được để trống")
-
-        # if 'certificate_number' in vals:
-        #     # print(vals['certificate_number'])
-        #     if len(vals['certificate_number']) ==0:
-        #         raise UserError("Số giấy chứng nhận không được để trống")
 
         if 'certificate_number' in vals:
             if len(vals['certificate_number'])==0:
@@ -101,17 +92,14 @@ class PtdCheckOrCorrect(models.Model):
         #update thời gian thực hiện, sử dụng, hết hạn
         date1= self.implementation_date
         date2 = self.validity_date
-        date3 = self.expiry_date
         if 'implementation_date' in vals:
             date1=vals['implementation_date']
         if 'validity_date' in vals:
             date2=vals['validity_date']
-        if 'expiry_date' in vals:
-            date3=vals['expiry_date']
+
         if datetime.strptime(str(date1),"%Y-%m-%d").date() >= datetime.strptime(str(date2),"%Y-%m-%d").date():
             raise UserError("Ngày hiệu lực không hợp lệ")
-        if datetime.strptime(str(date2), "%Y-%m-%d").date() >= datetime.strptime(str(date3), "%Y-%m-%d").date():
-            raise UserError("Ngày hết hạn không hợp lệ")
+
 
         # update nguyên nhân không đạt
         if 'name' in vals:
@@ -119,7 +107,5 @@ class PtdCheckOrCorrect(models.Model):
                 raise UserError("Kết quả không được để trống")
             if vals['name'] == '2' and 'reason_not_pass' not in vals:
                 raise UserError("Nguyên nhân không đạt không được để trống")
-            # if vals['name'] == '1':
-            #     self.reason_not_pass =""
         result = super(PtdCheckOrCorrect, self).write(vals)
         return result

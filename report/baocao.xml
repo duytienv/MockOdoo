@@ -150,12 +150,12 @@
 
         <!--                            Thời gian thực hiện kiểm định hiệu chỉnh-->
                                     <t t-if="not record.check_or_correct_ids">
-                                        <td><p>No</p></td>
-                                        <td><p>No</p></td>
-                                        <td><p>No</p></td>
-                                        <td><p>No</p></td>
-                                        <td><p>No</p></td>
-                                        <td><p>No</p></td>
+                                        <td><p> </p></td>
+                                        <td><p> </p></td>
+                                        <td><p> </p></td>
+                                        <td><p> </p></td>
+                                        <td><p> </p></td>
+                                        <td><p> </p></td>
                                     </t>
                                     <t t-else="record.check_or_correct_ids">
                                         <t t-foreach="record.display_kd_hc()" t-as="check_or_correct_id">
@@ -208,7 +208,7 @@
 
 
                                     <t t-if="not record.maintain_info_ids">
-                                        <td><p>No</p></td>
+                                        <td><p> </p></td>
                                     </t>
                                     <t t-if="record.maintain_info_ids">
                                         <t t-foreach="record.display_time()" t-as="maintain_id">
@@ -217,18 +217,12 @@
                                     </t>
 
 
-                                    <t t-if="not record.broken_ids">
-                                        <td><p>No</p></td>
-                                        <td><p>No</p></td>
-                                    </t>
-                                    <t t-if="record.broken_ids">
-                                        <t t-foreach="record.display_broken()" t-as="broken_id">
-                                            <td><p><span t-esc="broken_id.fail_time"/></p></td>
-                                            <td><p><span t-esc="broken_id.fail_reason"/></p></td>
-                                        </t>
-
-                                    </t>
-
+                                    <td>
+                                        <p><span t-esc="record.fail_time"/></p>
+                                    </td>
+                                    <td>
+                                        <p><span t-esc="record.fail_reason"/></p>
+                                    </td>
                                     <td>
         <!--                                   Ghi chú-->
                                         <p><span t-esc="record.description"/></p>
@@ -373,7 +367,7 @@
                                               </t>
                                           </t>
                                           <t t-else="not record.technical_characteristics_ids">
-                                              <td><p>No</p></td>
+                                              <td><p> </p></td>
                                           </t>
 
                                           <td>
@@ -400,7 +394,7 @@
                                               </t>
                                           </t>
                                           <t t-else="not record.check_or_correct_ids">
-                                              <td><p>No</p></td>
+                                              <td><p> </p></td>
                                           </t>
                                           <td>
         <!--                                    Ghi chú-->
@@ -489,10 +483,17 @@
     <!--                                    Năm sử dụng-->
                                         <span t-esc="record.year_use"/>
                                     </td>
-                                    <td>
-    <!--                                    Đặc tính kỹ thuật đo lường-->
-                                        <span t-esc="record.technical_properties"/>
-                                    </td>
+                                    <t t-if="record.technical_characteristics_ids">
+                                          <t t-foreach="record.display_thongtin()" t-as="thongtin">
+                                              <td>
+                                                  <p>
+                                                      <span t-esc="thongtin.parameters"/> -
+                                                      <span t-esc="thongtin.val_maintain"/> -
+                                                      <span t-esc="thongtin.exact_level"/>
+                                                  </p>
+                                              </td>
+                                          </t>
+                                    </t>
                                     <td>
     <!--                                    Cấp CL / Cấp chất lượng / Phân cấp chất lượng-->
                                             <span t-esc="record.quality_level"/>
@@ -504,9 +505,9 @@
 
 <!--                                         kiểm định hiệu chỉnh-->
                                     <t t-if="not record.check_or_correct_ids">
-                                        <td><p>No</p></td>
-                                        <td><p>No</p></td>
-                                        <td><p>No</p></td>
+                                        <td><p> </p></td>
+                                        <td><p> </p></td>
+                                        <td><p> </p></td>
                                     </t>
                                     <t t-else="record.check_or_correct_ids">
 
@@ -579,5 +580,39 @@
             attachment_use="True"
             paperformat="bms_paperformat"/>
 
+
+
+        <report
+            id="account_test1_id_xls"
+            model = "ptd.ptd"
+            string ="Báo cáo chi tiết phương tiện đo (xlsx)"
+            report_type="xlsx"
+            name = "Mock_odoo.baocaochitiet_xls"
+            file = "Mock_odoo.baocaochitiet_xls"
+        />
+        <report
+            id="account_test2_id_xls"
+            model = "ptd.ptd"
+            string ="Báo cáo thông tin sai lệch (xlsx)"
+            report_type="xlsx"
+            name = "Mock_odoo.baocaothongtinsailech_xls"
+            file = "Mock_odoo.baocaothongtinsailech_xls"
+        />
+        <report
+            id="account_test3_id_xls"
+            model = "ptd.ptd"
+            string ="Báo cáo tổng hợp PTD cấp BQP (xlsx)"
+            report_type="xlsx"
+            name = "Mock_odoo.baocaotonghopptdcapbqp_xls"
+            file = "Mock_odoo.baocaotonghopptdcapbqp_xls"
+        />
+        <report
+            id="account_test4_id_xls"
+            model = "ptd.ptd"
+            string ="Báo cáo sổ quản lý trang bị đo lường - thử nghiệm (xlsx)"
+            report_type="xlsx"
+            name = "Mock_odoo.baocaosoquanlydonvi_xls"
+            file = "Mock_odoo.baocaosoquanlydonvi_xls"
+        />
     </data>
 </odoo>
