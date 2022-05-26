@@ -14,7 +14,7 @@
                                 <field name="stand_link_type" />
                                 <field name="implementation_date" />
                                 <field name="validity_date" />
-                                <field name="expiry_date" readonly="1"/>
+                                <field name="expiry_date"/>
 
                             </group>
                             <group>
@@ -37,28 +37,15 @@
             <field name="model">ptd.check.or.correct</field>
             <field name="arch" type="xml">
                 <tree string="Kiểm định/ Hiệu chỉnh" default_order="id desc" >
-<!--                    <field name="id" />-->
+                    <field name="implementation_date" />
                     <field name="organisation_id" />
                     <field name="certificate" />
-                    <field name="implementation_date" />
                     <field name="validity_date" />
                     <field name="expiry_date" />
                 </tree>
             </field>
         </record>
 
-        <record id="ptd_check_search" model="ir.ui.view">
-            <field name="name">ptd.check.or.correct</field>
-            <field name="model">ptd.check.or.correct</field>
-            <field name="arch" type="xml">
-                <search>
-                    <group expand="0" string="Group By">
-                        <field name="name"/>
-                        <field name="stand_link_type"/>
-                    </group>
-                </search>
-            </field>
-        </record>
 
         <record id="ptd_check_or_correct_act" model="ir.actions.act_window">
             <field name="name">Kiểm định/ Hiệu chỉnh</field>

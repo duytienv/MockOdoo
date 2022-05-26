@@ -15,17 +15,28 @@ class PtdMaintainInfo(models.Model):
     maintain_info_id=fields.Many2one("ptd.ptd")
     @api.model
     def create(self, vals):
+        if vals['name'] == 0:
+            raise UserError("Ngày thực hiện không được để trống")
+        if vals['cost'] == 0:
+            raise UserError("Gía thành không được để trống")
         if vals['implementation_date'] == 0:
             raise UserError("Ngày thực hiện không được để trống")
-        elif vals['note'] == 0:
+        if vals['note'] == 0:
             raise UserError("Ghi chú không được để trống")
-        elif vals['attach_file']==0:
+        if vals['attach_file']==0:
             raise UserError("File không được để trống")
-        else:
-            result = super(PtdMaintainInfo, self).create(vals)
+        result = super(PtdMaintainInfo, self).create(vals)
         return result
 
     def write(self, vals):
+        if 'name' in vals:
+            print(vals['name'])
+            if vals['name'] == False:
+                raise UserError("Người thực hiện không được để trống")
+        if 'cost' in vals:
+            print(vals['cost'])
+            if vals['cost'] == False:
+                raise UserError("Gía thành không được để trống")
         if 'implementation_date' in vals:
             print(vals['implementation_date'])
             if vals['implementation_date'] == False:

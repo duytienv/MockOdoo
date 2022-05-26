@@ -6,14 +6,10 @@ class PhuongTienDo(models.Model):
     _name = "ptd.ptd"
     _description = "Create measuring device"
 
-
     # THÔNG TIN CHUNG
-
-
     asset_code = fields.Text("Mã QLTS",size=8)
     name = fields.Char("Tên thiết bị")
     commodity_code=fields.Char(string="Mã thiết bị")
-
     classify = fields.Selection(
         string='Phân loại',
         selection=[('1', 'Thiết bị chính'), ('2', 'Thiết bị phụ')],
@@ -29,7 +25,7 @@ class PhuongTienDo(models.Model):
 
     manufactor_id = fields.Many2one("ptd.manufactor", string="Nhà sản xuất")
 
-    serial_number = fields.Text("Số hiệu")
+    serial_number = fields.Char("Số hiệu")
 
     unit_id = fields.Many2one("ptd.unit", string="Đơn vị tính")
 
@@ -152,17 +148,6 @@ class PhuongTienDo(models.Model):
         required=False)
 
     maintain_info = fields.Integer(string="Đã bảo dưỡng")
-    @api.onchange('maintain_info_ids')
-    def _maintain_change(self):
-        if len(self.maintain_info_ids):
-            self.maintain_info = 1
-        else:
-            self.maintain_info = 0
-
-
-
-
-
 
     def year_selection(self):
         year = 2000
@@ -188,34 +173,53 @@ class PhuongTienDo(models.Model):
     @api.onchange('maintain_info_ids')
     def _onchange_maintain_info_ids(self):
         len_origin = len(self._origin.maintain_info_ids)
-        if len_origin > 0:
-            if len_origin < len(self.maintain_info_ids):
-                if self.maintain_info_ids[len_origin].implementation_date < self._origin.maintain_info_ids[len_origin - 1].implementation_date:
-                    raise UserError('Ngày thuc không hợp lệ')
-            if len_origin == len(self.maintain_info_ids):
-                if len_origin==2:
-                    if self.maintain_info_ids[0].implementation_date < self._origin.maintain_info_ids[len_origin - 2].implementation_date:
-                        raise UserError('Ngày hỏng không hợp lệ')
+        len1 =len(self.maintain_info_ids)
+        # #them hàng mới
+        if len_origin<len1:
+            if len_origin>=1:
+                # print(self.maintain_info_ids[len1 - 1].implementation_date,
+                #       self.maintain_info_ids[len1 - 2].implementation_date)
+                # print(type(self.maintain_info_ids[len1 - 1].implementation_date),
+                #       type(self.maintain_info_ids[len1 - 2].implementation_date))
+                if self.maintain_info_ids[len1-1].implementation_date :
+                    if self.maintain_info_ids[len1 - 1].implementation_date < self.maintain_info_ids[
+                        len1 - 2].implementation_date:
+                        raise UserError('Ngày thuc hiện không hợp lệ')
+        # #sửa hàng
+        if len_origin==len1:
+            if len1>=2:
+                # print(self.maintain_info_ids[len1-1].implementation_date,self.maintain_info_ids[len1-2].implementation_date)
+                if self.maintain_info_ids[len1-1].implementation_date < self.maintain_info_ids[len1-2].implementation_date:
+                    raise UserError('Ngày thuc hiện không hợp lệ')
+
+
+
+    @api.onchange('maintain_info_ids')
+    def _maintain_change(self):
+        if len(self.maintain_info_ids):
+            self.maintain_info = 1
+        else:
+            self.maintain_info = 0
 
     @api.onchange('maintain_info_ids')
     def _status_bd(self):
+        print("Đang ơ đây",len(self.maintain_info_ids))
         if len(self.maintain_info_ids):
-            print(self.maintenance_cycle)
-            #day1 là ngày hết hiệu lực= ngày thực hiện + chuky*30 ngày
-            day1 = self.maintain_info_ids[len(self.maintain_info_ids)-1].implementation_date +timedelta(days =self.maintenance_cycle*30)
-            #day2 bằng day1 - ngày hiện tại
-            day2= day1 - date.today()
-            if int(day2.days)> 30:
-                self.status_bd='1'
-            else:
-                self.status_bd='2'
+            print("Xuống")
+            if self.maintain_info_ids[len(self.maintain_info_ids )- 1].implementation_date:
+                #day1 là ngày hết hiệu lực= ngày thực hiện + chuky*30 ngày
+                day1 = self.maintain_info_ids[len(self.maintain_info_ids)-1].implementation_date +timedelta(days =self.maintenance_cycle*30)
+                #day2 bằng day1 - ngày hiện tại
+                day2= day1 - date.today()
+                print(day1,day2)
+                print(day2.days, int(day2.days))
+                if int(day2.days)> 30:
+                    self.status_bd='1'
+                else:
+                    self.status_bd='2'
         else:
             self.status_bd='0'
 
-    # @api.onchange('validity_date')
-    # def _expiry_date(self):
-    #     if self.validity_date:
-    #         self.expiry_date=self.validity_date + timedelta(days=180)
 
 
 
