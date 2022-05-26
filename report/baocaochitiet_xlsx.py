@@ -10,9 +10,9 @@ class BaoCaoChiTietXlsx(models.AbstractModel):
         title = workbook.add_format(
             {'bold': True, 'align': 'center', 'font_size': 20, 'bg_color': '#f2eee4', 'border': True})
         merge_format = workbook.add_format({'bold': True, 'align': 'center', 'border': True})
-
+        data_row_style = workbook.add_format({'bold': False, 'align': 'center', 'border': True})
         sheet.merge_range('A1:Y1', 'BÁO CÁO CHI TIẾT VỀ PHƯƠNG TIỆN ĐO LƯỜNG TRONG TOÀN TẬP ĐOÀN', title)
-        date_format = workbook.add_format({'num_format': 'dd/mm/yy'})
+        date_format = workbook.add_format({'num_format': 'dd/mm/yy','bold': False, 'align': 'center', 'border': True})
         cell_format = workbook.add_format({'bold': True})
 
 
@@ -60,13 +60,12 @@ class BaoCaoChiTietXlsx(models.AbstractModel):
 
         # Trong công tác bảo trì bảo dưỡng
         sheet.merge_range('V4:V5', 'Thời gian thực hiện gần nhất', merge_format)
-
         #Trong công tác bảo hành sửa chữa
         sheet.merge_range('W4:W5', 'Thời gian hỏng gần nhất', merge_format)
         sheet.merge_range('X4:X5', 'Nguyên nhân hỏng', merge_format)
 
         sheet.set_column('A:A',5)
-        sheet.set_column('B:B',18)
+        sheet.set_column('B:B',20)
         sheet.set_column('C:C',12)
         sheet.set_column('D:D',11)
         sheet.set_column('E:E',10)
@@ -102,84 +101,126 @@ class BaoCaoChiTietXlsx(models.AbstractModel):
         sheet.set_column('Y:Y',18)
 
 
-        # records = self.env['ptd.ptd']
-        #
-        # docs = []
-        # i = 1
-        #
-        # for record in records:
-        #     docs.append({
-        #         'id' : i,
-        #         'name': record.name,
-        #         'commodity_code': record.commodity_code,
-        #         'serial_number': record.serial_number,
-        #         # 'quality_status':record.quality_status,
-        #         # 'manager_id1':record.manager_id.employee_code,
-        #         # 'manager_id2':record.manager_id.name,
-        #         # 'unit_manager_id':record.unit_manager_id.name,
-        #         # # Cấp phải so sánh
-        #         # 'quality_level':record.quality_level,
-        #         #
-        #         # 'maintenance_cycle':record.maintenance_cycle,
-        #         # # KĐ/HC
-        #
-        #     })
-        #     i += 1
-        #
-        # row = 7
-        # col = 0
-        #
-        # for doc in docs:
-        #     # Id
-        #     sheet.write(row, col, doc['id'])
-        #     # Tên thiết bị
-        #     sheet.write(row, col + 1, doc['name'])
-        #     # # Mã hàng hóa
-        #     sheet.write(row, col + 2, doc['commodity_code'])
-        #     # # Part number
-        #     # sheet.write(row,col+3, doc[''])
-        #     # # Serial
-        #     sheet.write(row, col + 4, doc['serial_number'])
-        #     # # Trạng thái
-        #     # sheet.write(row,col+5, doc['quality_status'], date_format)
-        #     # # Thời gian đưa vào sử dụng
-        #     # sheet.write(row,col+6, doc[''])
-        #     # # Mã nhân viên
-        #     # sheet.write(row,col+7, doc['manager_id1'])
-        #     # # Họ và tên - Chưa làm
-        #     # sheet.write(row,col+8, doc['manager_id2'])
-        #     # # Đơn vị quản lý - Chưa làm
-        #     # sheet.write(row,col+9, doc['unit_manager_id'])
-        #     # # Cấp 1
-        #     # sheet.write(row,col+10, doc['quality_level'])
-        #     # # Cấp 2
-        #     # sheet.write(row,col+11, doc['quality_level'])
-        #     # # Cấp 3
-        #     # sheet.write(row,col+12, doc['quality_level'])
-        #     # # Cấp 4
-        #     # sheet.write(row,col+13, doc['quality_level'])
-        #     # # Chu kì kiểm định hiệu chuẩn
-        #     # sheet.write(row,col+14, doc['maintenance_cycle'])
-        #     # # Thời gian thực hiện KĐHC gần nhất
-        #     # sheet.write(row,col+15, doc[''])
-        #     # # Đối tác thực hiện KĐHC
-        #     # sheet.write(row,col+16, doc[''])
-        #     # # Ghi rõ KĐ hay HC
-        #     # sheet.write(row,col+17, doc[''])
-        #     # # Đạt
-        #     # sheet.write(row,col+18, doc[''])
-        #     # # Không đạt
-        #     # sheet.write(row,col+19, doc[''])
-        #     # # Nguyên nhân không đạt
-        #     # sheet.write(row,col+20, doc[''])
-        #     # # Thời gian thực hiện gần nhất
-        #     # sheet.write(row,col+21, doc[''])
-        #     # # Thời gian hỏng gần nhất
-        #     # sheet.write(row,col+22, doc[''])
-        #     # # Nguyên nhân hỏng
-        #     # sheet.write(row,col+23, doc[''])
-        #     # # Ghi chú
-        #     # sheet.write(row,col+24, doc['description'])
-        #
-        #     row += 1
+        records = self.env['ptd.ptd'].search([])
+
+        row = 5
+        col = 0
+        docs = []
+        i = 1
+
+        for record in records:
+            quality_status = dict(record._fields['quality_status'].selection)
+
+            self.env.cr.execute(
+                """SELECT max(implementation_date) FROM ptd_maintain_info WHERE maintain_info_id = %s """ % (record.id))
+            mainteinance_imple_date = self.env.cr.fetchone()
+            print(mainteinance_imple_date)
+            docs.append({
+                'id' : i,
+                'name': record.name,
+                'commodity_code': record.commodity_code,
+                # Part number
+                'serial_number': record.serial_number,
+                'quality_status': quality_status.get(record.quality_status),
+                # Thời gian đưa vào sử dụng
+                'manager_id1':record.manager_id.employee_code,
+                'manager_id2':record.manager_id.name,
+                'unit_manager_id':record.unit_manager_id.name,
+                'quality_level':record.quality_level,
+                'maintenance_cycle':record.maintenance_cycle,
+                'check_or_correct_ids': record.check_or_correct_ids.name,
+                'reason_not_pass': record.check_or_correct_ids.reason_not_pass,
+                'mainteinance_imple_date': mainteinance_imple_date[0],
+                'fail_time' : record.fail_time,
+                'fail_reason' : record.fail_reason,
+                'description' : record.description
+            })
+            i += 1
+        print(docs)
+        for doc in docs:
+            # Id
+            sheet.write(row, col, doc['id'],data_row_style)
+            # Tên thiết bị
+            sheet.write(row, col + 1, doc['name'],data_row_style)
+            # Mã hàng hóa
+            sheet.write(row, col + 2, doc['commodity_code'],data_row_style)
+            # Part number
+            sheet.write(row,col+3, "",data_row_style)
+            # Serial
+            sheet.write(row, col + 4, doc['serial_number'],data_row_style)
+            # Trạng thái
+            sheet.write(row,col+5, doc['quality_status'], data_row_style)
+            # Thời gian đưa vào sử dụng
+            sheet.write(row,col+6, "",data_row_style)
+            # Mã nhân viên
+            sheet.write(row,col+7, doc['manager_id1'],data_row_style)
+            # Họ và tên - Chưa làm
+            sheet.write(row,col+8, doc['manager_id2'],data_row_style)
+            # Đơn vị quản lý - Chưa làm
+            sheet.write(row,col+9, doc['unit_manager_id'],data_row_style)
+            # Cấp 1
+            if doc['quality_level'] == '1':
+                sheet.write(row, col+10, "x", data_row_style)
+                sheet.write(row, col+11, "", data_row_style)
+                sheet.write(row, col+12, "", data_row_style)
+                sheet.write(row, col+13, "", data_row_style)
+
+            if doc['quality_level'] == '2':
+                sheet.write(row, col+10, "", data_row_style)
+                sheet.write(row, col+11, "x", data_row_style)
+                sheet.write(row, col+12, "", data_row_style)
+                sheet.write(row, col+13, "", data_row_style)
+
+            if doc['quality_level'] == '3':
+                sheet.write(row, col+10, "", data_row_style)
+                sheet.write(row, col+11, "", data_row_style)
+                sheet.write(row, col+12, "x", data_row_style)
+                sheet.write(row, col+13, "", data_row_style)
+
+            if doc['quality_level'] == '4':
+                sheet.write(row, col+10, "", data_row_style)
+                sheet.write(row, col+11, "", data_row_style)
+                sheet.write(row, col+12, "", data_row_style)
+                sheet.write(row, col+13, "x", data_row_style)
+
+            # Chu kì kiểm định hiệu chuẩn
+            sheet.write(row,col+14, doc['maintenance_cycle'],data_row_style)
+            # Thời gian thực hiện KĐHC gần nhất
+            sheet.write(row,col+15, "",data_row_style)
+            # Đối tác thực hiện KĐHC
+            sheet.write(row,col+16, "",data_row_style)
+            # Ghi rõ KĐ hay HC
+            sheet.write(row,col+17, "Đúng",data_row_style)
+            # Đạt
+            if doc['check_or_correct_ids'] != '1' and doc['check_or_correct_ids'] != '2':
+                sheet.write(row, col + 18, "", data_row_style)
+                sheet.write(row, col + 19, "", data_row_style)
+                sheet.write(row, col + 20, "", data_row_style)
+            if doc['check_or_correct_ids'] =='1':
+                sheet.write(row,col+18, "x",data_row_style)
+                sheet.write(row,col+19, "",data_row_style)
+                sheet.write(row,col+20, "",data_row_style)
+            # Không đạt
+            if doc['check_or_correct_ids'] =='2':
+                sheet.write(row,col+18, "",data_row_style)
+                sheet.write(row,col+19, "x",data_row_style)
+                sheet.write(row,col+20, doc['reason_not_pass'],data_row_style)
+            # Nguyên nhân không đạt
+            # Thời gian thực hiện gần nhất
+            if doc['mainteinance_imple_date'] == 'False':
+                sheet.write(row,col+21,"No",date_format)
+            else:
+                sheet.write(row,col+21, doc['mainteinance_imple_date'],date_format)
+
+            # Viết hàm điều kiện
+            if doc['quality_status'] != 'Hư hỏng':
+                sheet.write(row,col+22,"",date_format)
+                sheet.write(row,col+23,"",date_format)
+            if  doc['quality_status'] == 'Hư hỏng':
+                sheet.write(row,col+22,doc["fail_time"],date_format)
+                sheet.write(row,col+23,doc["fail_reason"],date_format)
+            sheet.write(row,col+24, doc['description'],data_row_style)
+            row += 1
+
+
 

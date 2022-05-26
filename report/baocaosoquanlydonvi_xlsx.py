@@ -15,11 +15,10 @@ class BaoCaoChiTietXlsx(models.AbstractModel):
             'bg_color': '#f2eee4',
             'border': True})
         merge_format = workbook.add_format({'bold': True, 'align': 'center', 'border': True})
-        data_row_style = workbook.add_format({'bold': True, 'align': 'center', 'border': True})
+        data_row_style = workbook.add_format({'bold': False, 'align': 'center', 'border': True})
 
         sheet.merge_range('A1:S1', 'BÁO CÁO SỔ QUẢN LÝ TRANG BỊ ĐO LƯỜNG - THỬ NGHIỆM', title)
-        date_format = workbook.add_format({'num_format': 'dd/mm/yy'})
-        cell_format = workbook.add_format({'bold': True})
+        date_format = workbook.add_format({'num_format': 'dd/mm/yy','bold': False, 'align': 'center', 'border': True})
 
         # sheet.write(a,b,'c') : a_ row ; b_col, c_text(số thì k cần dấu ' ') (có thể tạo 1 cái)
         # sheet.merge_range(first_row, first_col, last_row, last_col, data [,merge_format]
@@ -84,11 +83,15 @@ class BaoCaoChiTietXlsx(models.AbstractModel):
                 'country_id':record.country_id.name,
                 'year_manufacture':record.year_manufacture,
                 'year_use' :record.year_use,
-                'technical_properties': record.technical_properties,
+                # 'technical_properties': record.technical_properties,
                 'quality_level': record.quality_level,
                 'maintenance_cycle':record.maintenance_cycle,
                 'level_BQP':record.level_BQP,
                 'description':record.description,
+
+                'check_or_correct_ids1':record.check_or_correct_ids.validity_date,
+                'check_or_correct_ids2':record.check_or_correct_ids.certificate_number,
+                'check_or_correct_ids3':record.check_or_correct_ids.organisation_id,
             })
             i += 1
 
@@ -107,13 +110,21 @@ class BaoCaoChiTietXlsx(models.AbstractModel):
             sheet.write(row, col+7, "1",data_row_style)
             sheet.write(row, col+8,doc['country_id'],data_row_style)
             sheet.write(row, col+9, doc['year_manufacture'],data_row_style)
-            sheet.write(row, col+10, doc['year_use'],data_row_style)
-            sheet.write(row, col+11, doc['technical_properties'],data_row_style)
+            sheet.write(row, col+10, doc['year_use'],date_format)
+            sheet.write(row, col+11, "",data_row_style)
             sheet.write(row, col+12, doc['quality_level'],data_row_style)
             sheet.write(row, col+13, doc['maintenance_cycle'],data_row_style)
-            sheet.write(row, col+14, "Hiệu lực",data_row_style)
-            sheet.write(row, col+15, "Số GCN",data_row_style)
-            sheet.write(row, col+16, "Đơn vị KĐHC",data_row_style)
+
+            if doc['check_or_correct_ids1'] != '':
+                sheet.write(row, col+14, doc['check_or_correct_ids1'],date_format)
+
+            if doc['check_or_correct_ids2'] != '':
+                sheet.write(row, col+15, doc['check_or_correct_ids2'],data_row_style)
+
+            if doc['check_or_correct_ids3'] != '':
+                sheet.write(row, col+16, doc['check_or_correct_ids3'],data_row_style)
+
+
 
             if doc['level_BQP'] == True:
                 sheet.write(row, col+17, "BQP",data_row_style)
